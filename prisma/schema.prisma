@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Car {
+  id        String   @id @default(uuid())
+  brand     String
+  model     String
+  year      Int
+  price_avg Float
+  type      String   // SUV, Sedan, Hatchback, etc.
+  imageUrl  String?
+
+  spec      Spec?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([brand])
+  @@index([model])
+  @@index([price_avg])
+  feedbacks Feedback[]
+}
+
+model Spec {
+  id                    String @id @default(uuid())
+  carId                 String @unique
+  car                   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+  
+  trunk_liters          Int    // Litros
+  wheelbase             Float  // Metros ou mm? Vamos usar Metros (ex: 2.65)
+  ground_clearance      Int    // mm (ex: 190)
+  fuel_consumption_city Float  // km/l
+  fuel_type             String // Gasolina, Flex, Diesel, Híbrido, Elétrico
+  transmission          String // Automático, Manual, CVT
+  hp                    Int?   // Cavalos de potência
+  acceleration          Float? // 0-100 km/h em segundos
+
+  // Normalized Scores (0-10)
+  trunk_score           Int    @default(0)
+  wheelbase_score       Int    @default(0)
+  ground_clearance_score Int   @default(0)
+  consumption_score     Int    @default(0)
+  hp_score              Int    @default(0)
+  acceleration_score    Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([trunk_liters])
+  @@index([fuel_consumption_city])
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  carId     String
+  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  
+  thumbs    Boolean  // true = like/sense, false = dislike/nonsense
+  weights   String   // JSON string of user weights { comfort: 10, ... }
+  
+  createdAt DateTime @default(now())
+
+  @@index([carId])
+}

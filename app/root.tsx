@@ -41,8 +41,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { Header } from "./components/header";
+import { Footer } from "./components/footer";
+
 export default function App() {
-  return <Outlet />;
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
