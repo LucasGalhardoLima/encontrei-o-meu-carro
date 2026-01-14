@@ -24,6 +24,31 @@ Install the dependencies:
 npm install
 ```
 
+### Database Setup
+
+This project uses [Neon DB](https://neon.tech) (PostgreSQL) as the database.
+
+1. Create a `.env` file in the root directory:
+
+```bash
+cp .env.example .env
+```
+
+2. Update the `DATABASE_URL` in `.env` with your Neon DB connection string.
+
+3. Run the database migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+4. Seed the database with initial data:
+
+```bash
+npx prisma db seed
+```
+
+
 ### Development
 
 Start the development server with HMR:
