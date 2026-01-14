@@ -226,7 +226,7 @@ const initialCars = [
     year: 2024,
     price_avg: 164990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/toyota/corolla-cross/2022/5od.jpg", // KBB (2022 works)
+    imageUrl: "/images/placeholder.png", // Placeholder (KBB forbidden)
     spec: {
       trunk_liters: 440,
       wheelbase: 2.64,
