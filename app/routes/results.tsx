@@ -14,6 +14,7 @@ import * as React from "react";
 import { calculateMatch } from "~/utils/match.server";
 import RadarChart, { RadarLegend } from "~/components/RadarChart";
 import { useComparisonStore } from "~/stores/comparison";
+import { FavoriteButton } from "~/components/FavoriteButton";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -166,6 +167,11 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                     </button>
                                 </div>
 
+                                {/* Favorite Button - Top Right */}
+                                <div className="absolute top-3 right-3 z-30">
+                                    <FavoriteButton carId={car.id} className="shadow-md bg-white/90 hover:bg-white" />
+                                </div>
+
                                 <Link to={`/carros/${car.id}`} className="block h-full">
                                     <div className="aspect-[16/9] relative bg-gray-100 flex items-center justify-center overflow-hidden">
                                         {car.imageUrl ? (
@@ -182,7 +188,8 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                             </div>
                                         )}
 
-                                        <div className="absolute top-3 right-3 flex flex-col gap-1 items-end z-20 pointer-events-none">
+                                        {/* Badges - Moved down slightly to avoid overlap with Favorite Button if needed, or relying on flex */}
+                                        <div className="absolute top-12 right-3 flex flex-col gap-1 items-end z-20 pointer-events-none">
                                             {car.matchDetails?.badges?.map((badge: string, idx: number) => (
                                                 <Badge key={idx} variant="secondary" className="bg-blue-100/90 text-blue-800 backdrop-blur-sm border-none shadow-sm">
                                                     {badge}
@@ -190,6 +197,7 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                             ))}
                                         </div>
                                     </div>
+// ... (rest of card)
                                     <CardHeader className="pb-2">
                                         <div className="flex justify-between items-start">
                                             <div>

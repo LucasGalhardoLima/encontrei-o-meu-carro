@@ -10,6 +10,7 @@ import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info, PlusCirc
 import { useComparisonStore } from "~/stores/comparison";
 import { getWebmotorsUrl, getOlxUrl, getMercadoLivreUrl } from "~/utils/deep-links";
 import * as React from "react";
+import { FavoriteButton } from "~/components/FavoriteButton";
 
 export async function loader({ params }: Route.LoaderArgs) {
     const { id } = params;
@@ -171,6 +172,12 @@ export default function CarDetail({ loaderData }: Route.ComponentProps) {
                             >
                                 <PlusCircle className="mr-2 h-5 w-5" /> Comparar este carro
                             </Button>
+                            <FavoriteButton
+                                carId={car.id}
+                                size="lg"
+                                className="h-14 w-14 rounded-full border-2 border-gray-100 shadow-lg"
+                                variant="outline"
+                            />
                         </div>
                     </div>
                 </div>
