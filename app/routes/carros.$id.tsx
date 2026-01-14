@@ -6,8 +6,10 @@ import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { Progress } from "~/components/ui/progress";
-import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info, PlusCircle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info, PlusCircle, CheckCircle, ExternalLink, ShoppingCart } from "lucide-react";
 import { useComparisonStore } from "~/stores/comparison";
+import { getWebmotorsUrl, getOlxUrl, getMercadoLivreUrl } from "~/utils/deep-links";
+import * as React from "react";
 
 export async function loader({ params }: Route.LoaderArgs) {
     const { id } = params;
@@ -173,6 +175,25 @@ export default function CarDetail({ loaderData }: Route.ComponentProps) {
                     </div>
                 </div>
 
+                {/* Desktop Offers Section */}
+                <div className="hidden md:flex gap-4 mb-16 p-6 bg-gray-50 rounded-2xl border border-gray-100 items-center justify-between">
+                    <div>
+                        <h3 className="text-lg font-bold text-gray-900">Gostou do {car.model}?</h3>
+                        <p className="text-gray-500 text-sm">Busque agora ofertas reais no mercado.</p>
+                    </div>
+                    <div className="flex gap-3">
+                        <Button asChild variant="outline" className="border-gray-300 hover:bg-white hover:text-[#E60023] hover:border-[#E60023]">
+                            <a href={getWebmotorsUrl(car.brand, car.model)} target="_blank" rel="noopener noreferrer">Webmotors</a>
+                        </Button>
+                        <Button asChild variant="outline" className="border-gray-300 hover:bg-white hover:text-[#6E0AD6] hover:border-[#6E0AD6]">
+                            <a href={getOlxUrl(car.brand, car.model)} target="_blank" rel="noopener noreferrer">OLX</a>
+                        </Button>
+                        <Button asChild variant="outline" className="border-gray-300 hover:bg-white hover:text-[#FFE600] hover:border-[#FFE600] hover:text-black">
+                            <a href={getMercadoLivreUrl(car.brand, car.model)} target="_blank" rel="noopener noreferrer">Mercado Livre</a>
+                        </Button>
+                    </div>
+                </div>
+
                 {/* Specs Visuals */}
                 <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-2">
                     <Activity className="w-6 h-6 text-blue-600" />
@@ -234,7 +255,62 @@ export default function CarDetail({ loaderData }: Route.ComponentProps) {
                     </div>
                 </div>
 
+                <div className="container mx-auto px-4 py-8 max-w-5xl">
+                    {/* (This section was intentionally left empty or for future use in previous snippets, but structured correctly here) */}
+                </div>
+
+                {/* Mobile Sticky Footer Placeholder - The actual footer is fixed */}
+                <div className="md:hidden h-20"></div>
             </div>
+
+            {/* Mobile Sticky Action Bar */}
+            <MobileOffersFooter car={car} />
+        </div>
+    );
+}
+
+function MobileOffersFooter({ car }: { car: any }) {
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    const links = [
+        { name: "Webmotors", url: getWebmotorsUrl(car.brand, car.model), color: "bg-[#E60023] hover:bg-[#b3001b]" },
+        { name: "OLX", url: getOlxUrl(car.brand, car.model), color: "bg-[#6E0AD6] hover:bg-[#5200a8]" },
+        { name: "Mercado Livre", url: getMercadoLivreUrl(car.brand, car.model), color: "bg-[#FFE600] text-black hover:bg-[#e6cf00]" },
+    ];
+
+    return (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] md:hidden z-50">
+            {isOpen ? (
+                <div className="space-y-3 mb-4 animate-in slide-in-from-bottom-10 fade-in">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="font-bold text-gray-700">Onde você prefere buscar?</span>
+                        <button onClick={() => setIsOpen(false)} className="text-gray-400 p-1">✕</button>
+                    </div>
+                    {links.map((link) => (
+                        <a
+                            key={link.name}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center justify-between w-full p-4 rounded-xl font-bold text-white shadow-sm ${link.color}`}
+                        >
+                            {link.name}
+                            <ExternalLink className="w-5 h-5 opacity-80" />
+                        </a>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex gap-3">
+                    <Button
+                        size="lg"
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold h-12 rounded-xl text-lg shadow-lg shadow-green-600/20"
+                        onClick={() => setIsOpen(true)}
+                    >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        Ver Ofertas Reais
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }
@@ -264,5 +340,5 @@ function SpecBar({ label, value, max, min = 0, icon, suffix, inverse = false }: 
             </div>
             <Progress value={percentage} className="h-3 bg-gray-100" indicatorClassName={inverse ? "bg-orange-500" : "bg-blue-600"} />
         </div>
-    )
+    );
 }

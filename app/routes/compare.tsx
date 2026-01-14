@@ -6,6 +6,7 @@ import { ArrowLeft, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { useComparisonStore } from "~/stores/comparison";
 import { useEffect } from "react";
+import { getWebmotorsUrl, getOlxUrl } from "~/utils/deep-links";
 
 export async function loader({ request }: Route.LoaderArgs) {
     const url = new URL(request.url);
@@ -114,6 +115,20 @@ export default function Compare({ loaderData }: Route.ComponentProps) {
                                 <span className="text-lg font-bold text-blue-600">
                                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(car.price_avg)}
                                 </span>
+                            </div>
+
+                            {/* Deep Links Dropdown/Buttons */}
+                            <div className="mt-4 grid grid-cols-1 gap-2">
+                                <Button asChild variant="outline" size="sm" className="w-full text-xs h-8 border-gray-200 hover:border-red-500 hover:text-red-600 justify-start">
+                                    <a href={getWebmotorsUrl(car.brand, car.model)} target="_blank" rel="noopener noreferrer">
+                                        Ver na Webmotors
+                                    </a>
+                                </Button>
+                                <Button asChild variant="outline" size="sm" className="w-full text-xs h-8 border-gray-200 hover:border-purple-500 hover:text-purple-600 justify-start">
+                                    <a href={getOlxUrl(car.brand, car.model)} target="_blank" rel="noopener noreferrer">
+                                        Ver na OLX
+                                    </a>
+                                </Button>
                             </div>
 
                             {/* Remove Button */}
