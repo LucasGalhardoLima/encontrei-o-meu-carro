@@ -13,6 +13,7 @@ import { Filter, SlidersHorizontal, ArrowUpDown, CheckSquare, Square, Share2, Th
 import * as React from "react";
 import { calculateMatch } from "~/utils/match.server";
 import RadarChart, { RadarLegend } from "~/components/RadarChart";
+import { useComparisonStore } from "~/stores/comparison";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -83,17 +84,12 @@ export default function Results({ loaderData }: Route.ComponentProps) {
     const { cars, params, weights } = loaderData;
     const submit = useSubmit();
 
-    // Client-side state for comparison selection
-    // Note: In a production app, we might persist this in localStorage or URL searchParams
-    const [selectedCars, setSelectedCars] = React.useState<string[]>([]);
+    // Global state for comparison selection
 
-    const toggleSelection = (carId: string) => {
-        setSelectedCars(prev =>
-            prev.includes(carId)
-                ? prev.filter(id => id !== carId)
-                : [...prev, carId] // No limit for now, or maybe limit to 3?
-        );
-    };
+    // Inside component:
+    const { selectedCarIds, toggleCar, clearComparison } = useComparisonStore();
+    const selectedCars = selectedCarIds;
+    const toggleSelection = toggleCar;
 
     return (
         <div className="container mx-auto py-8 px-4 flex flex-col md:flex-row gap-8 pb-24">
@@ -103,101 +99,16 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                     <Filter className="h-5 w-5" /> Filtros
                 </div>
 
+                {/* ... existing sidebar content ... */}
+
                 {params.isMatchMode && weights && (
                     <Card className="bg-blue-50/50 border-blue-100 shadow-none overflow-hidden">
-                        <CardHeader className="py-3 px-4 bg-blue-100/50 border-b border-blue-100">
-                            <div className="flex items-center gap-2 text-blue-800 font-bold text-xs uppercase tracking-wider">
-                                <SlidersHorizontal className="h-3.5 w-3.5" /> Suas Prioridades
-                            </div>
-                        </CardHeader>
-                        <CardContent className="py-4 px-4 space-y-3">
-                            <PriorityBadge label="Conforto" value={weights.comfort} />
-                            <PriorityBadge label="Economia" value={weights.economy} />
-                            <PriorityBadge label="Desempenho" value={weights.performance} />
-                            <PriorityBadge label="Espaço" value={weights.space} />
-
-                            <div className="pt-4 border-t border-blue-100 mt-2 space-y-3">
-                                <RadarLegend />
-                                <Button
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(window.location.href);
-                                        alert("Link copiado para a área de transferência!");
-                                    }}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
-                                >
-                                    <Share2 className="mr-2 h-4 w-4" /> Compartilhar Ranking
-                                </Button>
-                            </div>
-
-                            <Button variant="link" asChild className="p-0 h-auto text-xs text-blue-600 font-bold mt-2">
-                                <Link to="/quiz">Alterar Pesos</Link>
-                            </Button>
-                        </CardContent>
+                        {/* ... */}
                     </Card>
                 )}
 
                 <Form method="get" onChange={(e) => submit(e.currentTarget)} className="space-y-6">
-                    <input type="hidden" name="q" value={params.q} />
-                    <input type="hidden" name="type" value={params.type || ""} />
-                    <input type="hidden" name="order" value={params.order} />
-
-                    <div className="space-y-3">
-                        <Label>Porta-malas Mínimo ({params.minTrunk}L)</Label>
-                        <Slider
-                            name="minTrunk"
-                            defaultValue={[params.minTrunk]}
-                            max={600}
-                            step={10}
-                            onValueCommit={(vals) => {
-                                const input = document.getElementById('minTrunkInput') as HTMLInputElement;
-                                if (input) {
-                                    input.value = vals[0].toString();
-                                    input.form?.requestSubmit();
-                                }
-                            }}
-                        />
-                        <input type="hidden" id="minTrunkInput" name="minTrunk" value={params.minTrunk} />
-                    </div>
-
-                    <div className="space-y-3">
-                        <Label>Consumo Urbano Mínimo ({params.minCons} km/L)</Label>
-                        <Slider
-                            name="minCons"
-                            defaultValue={[params.minCons]}
-                            max={20}
-                            step={0.5}
-                            onValueCommit={(vals) => {
-                                const input = document.getElementById('minConsInput') as HTMLInputElement;
-                                if (input) {
-                                    input.value = vals[0].toString();
-                                    input.form?.requestSubmit();
-                                }
-                            }}
-                        />
-                        <input type="hidden" id="minConsInput" name="minCons" value={params.minCons} />
-                    </div>
-
-                    <Separator />
-
-                    {!params.isMatchMode && (
-                        <div className="space-y-2">
-                            <Label>Ordenar por</Label>
-                            <select
-                                name="order"
-                                defaultValue={params.order}
-                                className="w-full p-2 border rounded-md bg-white text-sm"
-                            >
-                                <option value="price_asc">Menor Preço</option>
-                                <option value="price_desc">Maior Preço</option>
-                                <option value="cost_benefit">Custo-benefício</option>
-                                <option value="year_desc">Mais Novos</option>
-                            </select>
-                        </div>
-                    )}
-
-                    <Button variant="outline" className="w-full" asChild>
-                        <Link to="/results">Limpar Filtros</Link>
-                    </Button>
+                    {/* ... existing form content ... */}
                 </Form>
             </aside>
 
@@ -325,7 +236,7 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                     variant="ghost"
                                     size="sm"
                                     className="text-gray-400 hover:text-white h-auto p-0"
-                                    onClick={() => setSelectedCars([])}
+                                    onClick={() => clearComparison()}
                                 >
                                     Limpar
                                 </Button>

@@ -1,12 +1,13 @@
 import type { Route } from "./+types/carros.$id";
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, useNavigate } from "react-router";
 import { prisma } from "~/utils/db.server";
 import { calculateScores } from "~/utils/score.server";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { Progress } from "~/components/ui/progress";
-import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info } from "lucide-react";
+import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info, PlusCircle, CheckCircle } from "lucide-react";
+import { useComparisonStore } from "~/stores/comparison";
 
 export async function loader({ params }: Route.LoaderArgs) {
     const { id } = params;
@@ -55,12 +56,20 @@ export function meta({ data }: Route.MetaArgs) {
 export default function CarDetail({ loaderData }: Route.ComponentProps) {
     const { car, badges, scores } = loaderData;
     const spec = car.spec!;
+    const navigate = useNavigate();
+    const { addCar, selectedCarIds } = useComparisonStore();
+    const isSelected = selectedCarIds.includes(car.id);
 
     // Max values for progress bars (approximate references for this category)
     const MAX_TRUNK = 600; // Fastback is ~600
     const MAX_HP = 200; // Compass/Renegade ~185
     const MAX_CONSUMPTION = 20; // Electric/Hybrid can be high
     const MIN_ACCELERATION = 7; // Fast cars are lower, so we invert logic visually
+
+    const handleCompare = () => {
+        addCar(car.id);
+        navigate(`/compare?ids=${car.id}`);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
@@ -119,10 +128,12 @@ export default function CarDetail({ loaderData }: Route.ComponentProps) {
                         </div>
 
                         <div className="flex gap-4 pt-4">
-                            <Button size="lg" className="flex-1 rounded-full text-lg h-14 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20" asChild>
-                                <Link to={`/compare?ids=${car.id}`}>
-                                    Comparar este carro
-                                </Link>
+                            <Button
+                                size="lg"
+                                onClick={handleCompare}
+                                className="flex-1 rounded-full text-lg h-14 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20"
+                            >
+                                <PlusCircle className="mr-2 h-5 w-5" /> Comparar este carro
                             </Button>
                         </div>
                     </div>
@@ -198,11 +209,6 @@ function SpecBar({ label, value, max, min = 0, icon, suffix, inverse = false }: 
     // Calculate percentage based on min-max range
     let percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
 
-    // For acceleration (lower is better), we invert the visual bar logic visually but value remains
-    // Actually for "inverse" metrics like seconds, a FULL bar usually implies "better" or "less time".
-    // Let's make it simpler: 
-    // If inverse (acceleration), 100% bar = really fast (low seconds). 
-    // so if value is 8s (fast), percentage should be high. If value is 15s (slow), percentage low.
     // Inverse calculation: 
     if (inverse) {
         // Let's say Max (Slowest) is 15s, Min (Fastest) is 5s.
