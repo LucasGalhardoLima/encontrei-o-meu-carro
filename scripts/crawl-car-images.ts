@@ -44,39 +44,92 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
   const page = await browser.newPage();
   
   try {
-    const urlPatterns = [
-      `https://www.kbb.com.br/${brand}/${model}`,
-      `https://www.kbb.com.br/carros/${brand}/${model}`,
-      `https://www.kbb.com.br/${brand}/${model}/${year}`,
+    // Strategy 1: Try direct URL patterns first (fast)
+    const directUrlPatterns = [
+      `https://static.kbb.com.br/pkw/t/${brand}/${model}/${year}/5od.jpg`,
+      `https://static.kbb.com.br/pkw/t/${brand}/${model}/${year - 1}/5od.jpg`,
+      `https://static.kbb.com.br/pkw/t/${brand}/${model}/${year - 2}/5od.jpg`,
     ];
     
-    for (const url of urlPatterns) {
+    for (const directUrl of directUrlPatterns) {
       try {
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 8000 });
-        await page.waitForTimeout(2000);
-        
-        const imageUrls = await page.evaluate(() => {
-          const images = Array.from(document.querySelectorAll('img'));
-          return images
-            .map(img => img.src)
-            .filter(src => src && src.includes('static.kbb.com.br') && src.includes('/pkw/'))
-            .filter(src => !src.includes('logo') && !src.includes('icon'));
-        });
-        
-        if (imageUrls.length > 0) {
-          const imageUrl = imageUrls[0];
-          const downloaded = await downloadImage(imageUrl, filename);
-          
-          await browser.close();
-          
+        const response = await fetch(directUrl, { method: 'HEAD' });
+        if (response.ok) {
+          console.log(`  ✅ KBB: Found via direct URL (${year})`);
+          const downloaded = await downloadImage(directUrl, filename);
           if (downloaded) {
-            console.log(`  ✅ KBB: Downloaded successfully`);
-            return { success: true, url: imageUrl };
+            await browser.close();
+            return { success: true, url: directUrl };
           }
         }
       } catch {
         continue;
       }
+    }
+    
+    // Strategy 2: Navigate KBB website to find the car page
+    console.log(`  🔍 KBB: Searching website for ${brand} ${model}...`);
+    
+    const searchUrl = `https://www.kbb.com.br/${brand}/${model}`;
+    
+    try {
+      await page.goto(searchUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+      await page.waitForTimeout(2000);
+      
+      // Look for car images on the page
+      const imageUrls = await page.evaluate(() => {
+        const images = Array.from(document.querySelectorAll('img'));
+        return images
+          .map(img => img.src || img.getAttribute('data-src'))
+          .filter(src => src && src.includes('static.kbb.com.br') && src.includes('/pkw/'))
+          .filter(src => !src.includes('logo') && !src.includes('icon') && !src.includes('thumb'));
+      });
+      
+      if (imageUrls.length > 0) {
+        // Try to download the first valid image
+        for (const imageUrl of imageUrls) {
+          const downloaded = await downloadImage(imageUrl, filename);
+          if (downloaded) {
+            console.log(`  ✅ KBB: Found via website navigation`);
+            await browser.close();
+            return { success: true, url: imageUrl };
+          }
+        }
+      }
+      
+      // Strategy 3: Try clicking on car versions/trims to find images
+      const versionLinks = await page.$$('a[href*="versao"], a[href*="version"], .car-version a, .trim-link');
+      
+      if (versionLinks.length > 0) {
+        console.log(`  🔍 KBB: Found ${versionLinks.length} versions, checking first one...`);
+        
+        try {
+          await versionLinks[0].click();
+          await page.waitForTimeout(2000);
+          
+          const versionImages = await page.evaluate(() => {
+            const images = Array.from(document.querySelectorAll('img'));
+            return images
+              .map(img => img.src || img.getAttribute('data-src'))
+              .filter(src => src && src.includes('static.kbb.com.br') && src.includes('/pkw/'))
+              .filter(src => !src.includes('logo') && !src.includes('icon'));
+          });
+          
+          if (versionImages.length > 0) {
+            const downloaded = await downloadImage(versionImages[0], filename);
+            if (downloaded) {
+              console.log(`  ✅ KBB: Found via version page`);
+              await browser.close();
+              return { success: true, url: versionImages[0] };
+            }
+          }
+        } catch {
+          // Version click failed, continue
+        }
+      }
+      
+    } catch (navError) {
+      console.log(`  ⚠️  KBB: Navigation failed - ${navError.message}`);
     }
     
     await browser.close();
@@ -85,7 +138,7 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
     
   } catch (error) {
     await browser.close();
-    console.log(`  ⚠️  KBB: Error, trying fallback...`);
+    console.log(`  ⚠️  KBB: Error - ${error.message}, trying fallback...`);
     return { success: false };
   }
 }
