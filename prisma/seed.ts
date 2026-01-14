@@ -10,7 +10,7 @@ const initialCars = [
     year: 2024,
     price_avg: 135990,
     type: "SUV",
-    imageUrl: "https://vrum.com.br/wp-content/uploads/2022/09/fiat-fastback-impulse-t200-preto.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Fiat_Fastback_Audace_T200.jpg/800px-Fiat_Fastback_Audace_T200.jpg",
     spec: {
       trunk_liters: 600,
       wheelbase: 2.53,
@@ -28,7 +28,7 @@ const initialCars = [
     year: 2024,
     price_avg: 145990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/171501311/model_main_comprar-t-cross-comfortline-200-tsi-ad7a97682d_44a9544bc3.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Volkswagen_T-Cross_R-Line_%28C1%29_%E2%80%93_Frontansicht%2C_28._September_2019%2C_D%C3%BCsseldorf.jpg/800px-Volkswagen_T-Cross_R-Line_%28C1%29_%E2%80%93_Frontansicht%2C_28._September_2019%2C_D%C3%BCsseldorf.jpg",
     spec: {
       trunk_liters: 373,
       wheelbase: 2.65,
@@ -46,7 +46,7 @@ const initialCars = [
     year: 2024,
     price_avg: 89990,
     type: "Hatch",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/148011111/model_main_comprar-polo-track-1-0-mpi-2024-e5d8a9e6af_8c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/2021_Volkswagen_Polo_Life.jpg/800px-2021_Volkswagen_Polo_Life.jpg",
     spec: {
       trunk_liters: 300,
       wheelbase: 2.56,
@@ -64,7 +64,7 @@ const initialCars = [
     year: 2024,
     price_avg: 110990,
     type: "Picape",
-    imageUrl: "https://api.fiat.com.br/image-magick/imagem/strada_preto.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Fiat_Strada_Volcano_1.3_2021_front_view.jpg/800px-Fiat_Strada_Volcano_1.3_2021_front_view.jpg",
     spec: {
       trunk_liters: 844,
       wheelbase: 2.73,
@@ -82,7 +82,7 @@ const initialCars = [
     year: 2024,
     price_avg: 82990,
     type: "Hatch",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/152011111/model_main_comprar-hb20-sense-2024-d5e8a9f6af_7b6a5e2d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Hyundai_HB20_facelift_in_Montevideo_%28cropped%29.jpg/800px-Hyundai_HB20_facelift_in_Montevideo_%28cropped%29.jpg",
     spec: {
       trunk_liters: 300,
       wheelbase: 2.53,
@@ -100,7 +100,7 @@ const initialCars = [
     year: 2024,
     price_avg: 85990,
     type: "Hatch",
-    imageUrl: "https://quatrorodas.abril.com.br/wp-content/uploads/2019/11/onix-hatch-premier-2020-01.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Chevrolet_Onix_Premier_2020.jpg/800px-Chevrolet_Onix_Premier_2020.jpg",
     spec: {
       trunk_liters: 275,
       wheelbase: 2.55,
@@ -118,7 +118,7 @@ const initialCars = [
     year: 2024,
     price_avg: 184990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/165011111/model_main_comprar-compass-sport-2024-a5d8a9e6af_9c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Jeep_Compass_MHEV_IAA_2021_1X7A0307.jpg/800px-Jeep_Compass_MHEV_IAA_2021_1X7A0307.jpg",
     spec: {
       trunk_liters: 476,
       wheelbase: 2.63,
@@ -136,7 +136,7 @@ const initialCars = [
     year: 2024,
     price_avg: 148990,
     type: "Sedan",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/142011111/model_main_comprar-corolla-gli-2024-f5d8a9e6af_6c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/2020_Toyota_Corolla_Altis_1.8_G_ZRE211R_%2820200228%29.jpg/800px-2020_Toyota_Corolla_Altis_1.8_G_ZRE211R_%2820200228%29.jpg",
     spec: {
       trunk_liters: 470,
       wheelbase: 2.70,
@@ -154,7 +154,7 @@ const initialCars = [
     year: 2024,
     price_avg: 135990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/155011111/model_main_comprar-creta-comfort-2024-e5d8a9e6af_8c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/2022_Hyundai_Creta_1.5_Prime_%28Indonesia%29_front_view.jpg/800px-2022_Hyundai_Creta_1.5_Prime_%28Indonesia%29_front_view.jpg",
     spec: {
       trunk_liters: 422,
       wheelbase: 2.61,
@@ -172,7 +172,7 @@ const initialCars = [
     year: 2024,
     price_avg: 125990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/162011111/model_main_comprar-kicks-active-2024-d5e8a9f6af_7b6a5e2d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Nissan_Kicks_%28P15%29_facelift_IMG_4366.jpg/800px-Nissan_Kicks_%28P15%29_facelift_IMG_4366.jpg",
     spec: {
       trunk_liters: 432,
       wheelbase: 2.62,
@@ -190,7 +190,7 @@ const initialCars = [
     year: 2024,
     price_avg: 129990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/168011111/model_main_comprar-renegade-1-3-turbo-2024-c5d8a9e6af_5c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Jeep_Renegade_S_001.jpg/800px-Jeep_Renegade_S_001.jpg",
     spec: {
       trunk_liters: 320,
       wheelbase: 2.57,
@@ -208,7 +208,7 @@ const initialCars = [
     year: 2024,
     price_avg: 151990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/145011111/model_main_comprar-hr-v-ex-2024-b5d8a9e6af_8c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/2022_Honda_HR-V_1.5_E_CVT_%28Indonesia%29_front_view.jpg/800px-2022_Honda_HR-V_1.5_E_CVT_%28Indonesia%29_front_view.jpg",
     spec: {
       trunk_liters: 354,
       wheelbase: 2.61,
@@ -226,7 +226,7 @@ const initialCars = [
     year: 2024,
     price_avg: 164990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/143011111/model_main_comprar-corolla-cross-xr-2024-a5d8a9e6af_9c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/2021_Toyota_Corolla_Cross_1.8_V_ZSG10_%2820210403%29.jpg/800px-2021_Toyota_Corolla_Cross_1.8_V_ZSG10_%2820210403%29.jpg",
     spec: {
       trunk_liters: 440,
       wheelbase: 2.64,
@@ -244,7 +244,7 @@ const initialCars = [
     year: 2024,
     price_avg: 130990,
     type: "SUV",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/158011111/model_main_comprar-tracker-1-2-turbo-2024-f5d8a9e6af_6c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Chevrolet_Tracker_Premier_1.2_Turbo_2021.jpg/800px-Chevrolet_Tracker_Premier_1.2_Turbo_2021.jpg",
     spec: {
       trunk_liters: 393,
       wheelbase: 2.57,
@@ -262,7 +262,7 @@ const initialCars = [
     year: 2024,
     price_avg: 71990,
     type: "Hatch",
-    imageUrl: "https://api.fiat.com.br/image-magick/imagem/mobi_branco.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Fiat_Mobi_Like_2021.jpg/800px-Fiat_Mobi_Like_2021.jpg",
     spec: {
       trunk_liters: 215,
       wheelbase: 2.30,
@@ -280,7 +280,7 @@ const initialCars = [
     year: 2024,
     price_avg: 72990,
     type: "Hatch",
-    imageUrl: "https://production.autoforce.com/uploads/picture/image/159011111/model_main_comprar-kwid-zen-2024-e5d8a9e6af_8c6a5e1d3d.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Renault_Kwid_Intense_2022_front.jpg/800px-Renault_Kwid_Intense_2022_front.jpg",
     spec: {
       trunk_liters: 290,
       wheelbase: 2.42,
@@ -298,7 +298,7 @@ const initialCars = [
     year: 2024,
     price_avg: 149800,
     type: "Hatch",
-    imageUrl: "https://diariodocomercio.com.br/wp-content/uploads/2023/12/byd-dolphin.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/BYD_Dolphin_IAA_2023_1X7A0063.jpg/800px-BYD_Dolphin_IAA_2023_1X7A0063.jpg",
     spec: {
       trunk_liters: 345,
       wheelbase: 2.70,
