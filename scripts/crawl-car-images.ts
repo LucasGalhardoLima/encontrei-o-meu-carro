@@ -80,7 +80,7 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
       const imageUrls = await page.evaluate(() => {
         const images = Array.from(document.querySelectorAll('img'));
         return images
-          .map(img => img.src || img.getAttribute('data-src'))
+          .map(img => img.src || img.getAttribute('data-src') || '')
           .filter(src => src && src.includes('static.kbb.com.br') && src.includes('/pkw/'))
           .filter(src => !src.includes('logo') && !src.includes('icon') && !src.includes('thumb'));
       });
@@ -88,6 +88,7 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
       if (imageUrls.length > 0) {
         // Try to download the first valid image
         for (const imageUrl of imageUrls) {
+          if (!imageUrl) continue;
           const downloaded = await downloadImage(imageUrl, filename);
           if (downloaded) {
             console.log(`  ✅ KBB: Found via website navigation`);
@@ -110,12 +111,12 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
           const versionImages = await page.evaluate(() => {
             const images = Array.from(document.querySelectorAll('img'));
             return images
-              .map(img => img.src || img.getAttribute('data-src'))
+              .map(img => img.src || img.getAttribute('data-src') || '')
               .filter(src => src && src.includes('static.kbb.com.br') && src.includes('/pkw/'))
               .filter(src => !src.includes('logo') && !src.includes('icon'));
           });
           
-          if (versionImages.length > 0) {
+          if (versionImages.length > 0 && versionImages[0]) {
             const downloaded = await downloadImage(versionImages[0], filename);
             if (downloaded) {
               console.log(`  ✅ KBB: Found via version page`);
@@ -128,7 +129,7 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
         }
       }
       
-    } catch (navError) {
+    } catch (navError: any) {
       console.log(`  ⚠️  KBB: Navigation failed - ${navError.message}`);
     }
     
@@ -136,7 +137,7 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
     console.log(`  ⚠️  KBB: No image found, trying fallback...`);
     return { success: false };
     
-  } catch (error) {
+  } catch (error: any) {
     await browser.close();
     console.log(`  ⚠️  KBB: Error - ${error.message}, trying fallback...`);
     return { success: false };
@@ -183,7 +184,7 @@ async function tryGoogleImages(displayName: string, year: number, filename: stri
     console.log(`  ❌ Google: No valid image found`);
     return { success: false };
     
-  } catch (error) {
+  } catch (error: any) {
     await browser.close();
     console.log(`  ❌ Google: Error - ${error.message}`);
     return { success: false };

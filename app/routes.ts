@@ -6,7 +6,7 @@ export default [
   route("quiz", "routes/quiz.tsx"),
   route("compare", "routes/compare.tsx"),
   route("admin", "routes/admin.tsx"),
-  route("carros/:brand/:slug", "routes/car_detail.tsx"),
+  route("carros/:id", "routes/carros.$id.tsx"),
   route("resource/og", "routes/resource.og.tsx"),
   route("api/feedback", "routes/api.feedback.tsx"),
 ] satisfies RouteConfig;
