@@ -41,15 +41,49 @@ export async function loader({ params }: Route.LoaderArgs) {
 }
 
 export function meta({ data }: Route.MetaArgs) {
-    if (!data) return [{ title: "Carro não encontrado" }];
-    const { car } = data;
+    if (!data || !data.car) {
+        return [{ title: "Carro não encontrado" }];
+    }
 
-    const title = `${car.brand} ${car.model} ${car.year} - Ficha Técnica`;
-    const description = `Detalhes completos do ${car.brand} ${car.model}: ${car.spec?.hp}cv, Porta-malas ${car.spec?.trunk_liters}L. Compare e decida.`;
+    const { car } = data;
+    const siteUrl = "https://encontreomeucarro.com.br"; // Replace with actual domain env var if available
+
+    // Construct dynamic OG image URL
+    // /resource/og?brand=Fiat&model=Pulse&year=2024&price=120000&badge=Porta-malas
+    const ogUrl = new URL(`${siteUrl}/resource/og`);
+    ogUrl.searchParams.set("brand", car.brand);
+    ogUrl.searchParams.set("model", car.model);
+    ogUrl.searchParams.set("year", String(car.year));
+    ogUrl.searchParams.set("price", String(car.price_avg));
+
+    // Find a highlight/badge for the OG image
+    let badge = "";
+    if (car.spec) {
+        if (car.spec.trunk_liters > 500) badge = `Porta-malas: ${car.spec.trunk_liters}L`;
+        else if (car.spec.fuel_consumption_city > 14) badge = `Econômico: ${car.spec.fuel_consumption_city} km/l`;
+        else if ((car.spec.hp || 0) > 150) badge = `Potente: ${car.spec.hp}cv`;
+    }
+    if (badge) ogUrl.searchParams.set("badge", badge);
+
+    const description = `Confira os detalhes do ${car.brand} ${car.model} ${car.year}. Preço médio: R$ ${car.price_avg.toLocaleString('pt-BR')}.`;
 
     return [
-        { title },
+        { title: `${car.brand} ${car.model} ${car.year} - Detalhes e Ficha Técnica` },
         { name: "description", content: description },
+
+        // Open Graph
+        { property: "og:title", content: `${car.brand} ${car.model} ${car.year}` },
+        { property: "og:description", content: description },
+        { property: "og:image", content: ogUrl.toString() },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:type", content: "website" },
+
+        // Twitter
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: `${car.brand} ${car.model}` },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: ogUrl.toString() },
     ];
 }
 

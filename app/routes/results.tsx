@@ -121,8 +121,22 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                             <p className="text-sm text-blue-600 font-medium">✨ Ordenados pelo seu Match Perfeito</p>
                         )}
                     </div>
-                    <div className="text-sm text-gray-500">
-                        Buscando por: {params.q || "Todos"}
+                    <div className="flex items-center gap-4">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                            onClick={() => {
+                                navigator.clipboard.writeText(window.location.href);
+                                alert("Link da busca copiado! Compartilhe com amigos.");
+                            }}
+                        >
+                            <Share2 className="w-4 h-4 mr-2" />
+                            Compartilhar Busca
+                        </Button>
+                        <div className="text-sm text-gray-500 hidden md:block">
+                            Buscando por: {params.q || "Todos"}
+                        </div>
                     </div>
                 </div>
 
@@ -130,7 +144,28 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                     {cars.map((car: any) => {
                         const isSelected = selectedCars.includes(car.id);
                         return (
-                            <Card key={car.id} className={`overflow-hidden hover:shadow-xl transition-all border-none shadow-md ring-1 ring-gray-200 group ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50/30' : ''}`}>
+                            <Card key={car.id} className={`relative group overflow-hidden hover:shadow-xl transition-all border-none shadow-md ring-1 ring-gray-200 ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50/30' : ''}`}>
+
+                                {/* Selection Checkbox - Moved outside Link to fix propagation */}
+                                <div className="absolute top-3 left-3 z-30">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleSelection(car.id);
+                                        }}
+                                        className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all cursor-pointer ${isSelected
+                                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                            : 'bg-white/90 text-gray-400 hover:bg-white hover:text-blue-500'
+                                            }`}
+                                    >
+                                        {isSelected ? (
+                                            <CheckSquare className="w-5 h-5" />
+                                        ) : (
+                                            <Square className="w-5 h-5" />
+                                        )}
+                                    </button>
+                                </div>
+
                                 <Link to={`/carros/${car.id}`} className="block h-full">
                                     <div className="aspect-[16/9] relative bg-gray-100 flex items-center justify-center overflow-hidden">
                                         {car.imageUrl ? (
@@ -139,37 +174,15 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                             <span className="text-gray-400">Sem imagem</span>
                                         )}
 
-                                        {/* Selection Checkbox - Click stopPropagation needed to not trigger navigation */}
-                                        <div className="absolute top-3 left-3 z-20" onClick={(e) => e.preventDefault()}>
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    toggleSelection(car.id);
-                                                }}
-                                                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all ${isSelected
-                                                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                                    : 'bg-white/90 text-gray-400 hover:bg-white hover:text-blue-500'
-                                                    }`}
-                                            >
-                                                {isSelected ? (
-                                                    <CheckSquare className="w-5 h-5" />
-                                                ) : (
-                                                    <Square className="w-5 h-5" />
-                                                )}
-                                            </button>
-                                        </div>
-
-                                        {/* ... (Badges and Match Score elements would go here, preserved from original logic if needed, simplify for update) ... */}
-
                                         {params.isMatchMode && (
-                                            <div className="absolute top-12 left-3 z-10">
+                                            <div className="absolute top-12 left-3 z-20">
                                                 <div className="bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm font-black shadow-lg flex items-center gap-1.5">
                                                     <span className="text-xs font-medium opacity-90">Match</span> {car.matchScore}%
                                                 </div>
                                             </div>
                                         )}
 
-                                        <div className="absolute top-3 right-3 flex flex-col gap-1 items-end z-10 pointer-events-none">
+                                        <div className="absolute top-3 right-3 flex flex-col gap-1 items-end z-20 pointer-events-none">
                                             {car.matchDetails?.badges?.map((badge: string, idx: number) => (
                                                 <Badge key={idx} variant="secondary" className="bg-blue-100/90 text-blue-800 backdrop-blur-sm border-none shadow-sm">
                                                     {badge}
