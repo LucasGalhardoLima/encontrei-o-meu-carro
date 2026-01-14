@@ -226,7 +226,7 @@ const initialCars = [
     year: 2024,
     price_avg: 164990,
     type: "SUV",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/2021_Toyota_Corolla_Cross_1.8_V_ZSG10_%2820210403%29.jpg/800px-2021_Toyota_Corolla_Cross_1.8_V_ZSG10_%2820210403%29.jpg", // Wikimedia fallback
+    imageUrl: "https://static.kbb.com.br/pkw/t/toyota/corolla-cross/2022/5od.jpg", // KBB (2022 works)
     spec: {
       trunk_liters: 440,
       wheelbase: 2.64,
