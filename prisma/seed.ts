@@ -190,7 +190,7 @@ const initialCars = [
     year: 2024,
     price_avg: 129990,
     type: "SUV",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Jeep_Renegade_S_001.jpg/800px-Jeep_Renegade_S_001.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/2019_Jeep_Renegade_Limited_1.0_Front.jpg/800px-2019_Jeep_Renegade_Limited_1.0_Front.jpg",
     spec: {
       trunk_liters: 320,
       wheelbase: 2.57,
