@@ -312,29 +312,97 @@ const initialCars = [
   },
 ];
 
+import { fetchKbbCars } from "../app/services/kbb.server";
+import { getCarImageUrl } from "../app/utils/car-gallery";
+
+// Helper to generate semi-realistic specs based on car type
+function generateSpec(type: string, price: number) {
+  const isSUV = type.toUpperCase().includes("SUV") || type.toUpperCase().includes("CROSS") || type.toUpperCase().includes("JEEP");
+  const isSedan = type.toUpperCase().includes("SEDAN");
+  
+  // Base stats
+  let trunk = isSUV ? 400 : (isSedan ? 450 : 280);
+  let hp = price > 150000 ? 150 : 80;
+  let consumption = price > 200000 ? 9.0 : (isSUV ? 11.0 : 13.5); 
+  
+  // Random variations (+- 10%)
+  const vary = (val: number) => val * (0.9 + Math.random() * 0.2);
+  
+  return {
+    trunk_liters: Math.floor(vary(trunk)),
+    wheelbase: isSUV ? 2.62 : (isSedan ? 2.65 : 2.55),
+    ground_clearance: isSUV ? 190 : 150,
+    fuel_consumption_city: parseFloat(vary(consumption).toFixed(1)),
+    fuel_type: "Flex",
+    transmission: "Automático",
+    hp: Math.floor(vary(hp)),
+    acceleration: parseFloat(vary(11.0).toFixed(1)),
+  };
+}
+
 async function main() {
-  console.log("Start seeding ...");
+  console.log("🚀 Start seeding with REAL images...");
   await prisma.car.deleteMany({});
+
+  // 1. Seed Initial Manual Cars (with REAL images mapped via utility)
   for (const car of initialCars) {
-    const createdCar = await prisma.car.create({
+    const realImageUrl = getCarImageUrl(car.brand, car.model, car.year, car.type);
+    
+    await prisma.car.create({
       data: {
-        brand: car.brand,
-        model: car.model,
-        year: car.year,
-        price_avg: car.price_avg,
-        type: car.type,
-        imageUrl: car.imageUrl,
-        spec: {
-          create: {
-            ...car.spec,
-            ...calculateScores(car.spec),
-          },
-        },
+        brand: car.brand, 
+        model: car.model, 
+        year: car.year, 
+        price_avg: car.price_avg, 
+        type: car.type, 
+        imageUrl: realImageUrl, // Using real KBB image
+        spec: { create: { ...car.spec, ...calculateScores(car.spec) } },
       },
     });
-    console.log(`Created car with id: ${createdCar.id}`);
   }
-  console.log("Seeding finished.");
+  console.log(`✅ Seeded ${initialCars.length} manual cars with real photos.`);
+
+  // 2. Seed KBB Mock Cars (with REAL images mapped via utility)
+  const kbbCars = await fetchKbbCars();
+  let addedCount = 0;
+
+  for (const kbb of kbbCars) {
+    const existing = initialCars.find(c => 
+        c.brand.toLowerCase() === kbb.brand.toLowerCase() && 
+        kbb.model.toLowerCase().includes(c.model.toLowerCase())
+    );
+
+    if (existing) continue;
+
+    let type = "Hatch";
+    if (kbb.model.includes("Cross") || kbb.model.includes("SUV") || kbb.model.includes("Tracker") || kbb.model.includes("Nivus") || kbb.model.includes("Pulse") || kbb.model.includes("Fastback")) type = "SUV";
+    if (kbb.model.includes("Sedan") || kbb.model.includes("Plus") || kbb.model.includes("Virtus") || kbb.model.includes("Cronos") || kbb.model.includes("Corolla") || kbb.model.includes("City")) type = "Sedan";
+    if (kbb.model.includes("Toro") || kbb.model.includes("Strada") || kbb.model.includes("Saveiro") || kbb.model.includes("Hilux") || kbb.model.includes("S10") || kbb.model.includes("Ranger") || kbb.model.includes("L200") || kbb.model.includes("Montana") || kbb.model.includes("Oroch") || kbb.model.includes("Amarok") || kbb.model.includes("Frontier") || kbb.model.includes("Titano") || kbb.model.includes("Maverick") || kbb.model.includes("RAM")) type = "Picape";
+
+    const generatedSpec = generateSpec(type, kbb.price_avg);
+    const realImageUrl = getCarImageUrl(kbb.brand, kbb.model, kbb.year, type);
+
+    await prisma.car.create({
+      data: {
+        brand: kbb.brand,
+        model: kbb.model,
+        year: kbb.year,
+        price_avg: kbb.price_avg,
+        type: type,
+        imageUrl: realImageUrl, // Correctly mapped real photo
+        spec: {
+            create: {
+                ...generatedSpec,
+                ...calculateScores(generatedSpec)
+            }
+        }
+      }
+    });
+    addedCount++;
+  }
+
+  console.log(`✅ Seeded ${addedCount} extra cars with real photos from KBB.`);
+  console.log("🏁 Seeding finished.");
 }
 
 main()
