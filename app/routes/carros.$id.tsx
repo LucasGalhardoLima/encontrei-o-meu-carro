@@ -9,6 +9,7 @@ import { Progress } from "~/components/ui/progress";
 import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info, PlusCircle, CheckCircle, ExternalLink, ShoppingCart } from "lucide-react";
 import { useComparisonStore } from "~/stores/comparison";
 import { getWebmotorsUrl, getOlxUrl, getMercadoLivreUrl } from "~/utils/deep-links";
+import { formatCv, formatKmPerLiter, formatSeconds } from "~/utils/metrics";
 import { toPriceNumber } from "~/utils/price";
 import * as React from "react";
 import { FavoriteButton } from "~/components/FavoriteButton";
@@ -213,25 +214,28 @@ export default function CarDetail({ loaderData }: Route.ComponentProps) {
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 space-y-8">
                         <SpecBar
                             label="Potência (cv)"
-                            value={spec.hp || 0}
+                            value={spec.hp ?? 0}
                             max={MAX_HP}
                             icon={<Gauge className="w-5 h-5 text-gray-500" />}
                             suffix=" cv"
+                            displayValue={formatCv(spec.hp)}
                         />
                         <SpecBar
                             label="Aceleração 0-100 km/h"
-                            value={spec.acceleration || 0}
+                            value={spec.acceleration ?? 0}
                             max={15}
                             inverse
                             icon={<Timer className="w-5 h-5 text-gray-500" />}
                             suffix=" seg"
+                            displayValue={formatSeconds(spec.acceleration)}
                         />
                         <SpecBar
                             label="Consumo Urbano"
-                            value={spec.fuel_consumption_city || 0}
+                            value={spec.fuel_consumption_city ?? 0}
                             max={MAX_CONSUMPTION}
                             icon={<Fuel className="w-5 h-5 text-gray-500" />}
                             suffix=" km/l"
+                            displayValue={formatKmPerLiter(spec.fuel_consumption_city)}
                         />
                     </div>
 
@@ -277,7 +281,9 @@ export default function CarDetail({ loaderData }: Route.ComponentProps) {
     );
 }
 
-function MobileOffersFooter({ car }: { car: any }) {
+type OfferCar = { brand: string; model: string };
+
+function MobileOffersFooter({ car }: { car: OfferCar }) {
     const [isOpen, setIsOpen] = React.useState(false);
 
     const links = [
@@ -323,7 +329,25 @@ function MobileOffersFooter({ car }: { car: any }) {
     );
 }
 
-function SpecBar({ label, value, max, min = 0, icon, suffix, inverse = false }: { label: string, value: number, max: number, min?: number, icon: React.ReactNode, suffix: string, inverse?: boolean }) {
+function SpecBar({
+    label,
+    value,
+    max,
+    min = 0,
+    icon,
+    suffix,
+    inverse = false,
+    displayValue,
+}: {
+    label: string;
+    value: number;
+    max: number;
+    min?: number;
+    icon: React.ReactNode;
+    suffix: string;
+    inverse?: boolean;
+    displayValue?: string;
+}) {
     // Calculate percentage based on min-max range
     let percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
 
@@ -343,7 +367,11 @@ function SpecBar({ label, value, max, min = 0, icon, suffix, inverse = false }: 
                     {icon} {label}
                 </div>
                 <div className="text-xl font-black text-gray-900">
-                    {value} <span className="text-sm font-normal text-gray-500">{suffix}</span>
+                    {displayValue ?? (
+                        <>
+                            {value} <span className="text-sm font-normal text-gray-500">{suffix}</span>
+                        </>
+                    )}
                 </div>
             </div>
             <Progress value={percentage} className="h-3 bg-gray-100" indicatorClassName={inverse ? "bg-orange-500" : "bg-blue-600"} />

@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { Route } from "./+types/garagem";
+import type { Prisma } from "@prisma/client";
 import { Link, useFetcher, useNavigate } from "react-router";
 import { useFavoritesStore } from "~/stores/favorites";
 import { FavoriteButton } from "~/components/FavoriteButton";
@@ -8,6 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card"
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { ArrowLeft, CarFront, Share2 } from "lucide-react";
+import { formatKmPerLiter, formatLiters } from "~/utils/metrics";
 import { toPriceNumber } from "~/utils/price";
 
 export function meta({ }: Route.MetaArgs) {
@@ -19,7 +21,8 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Garagem() {
     const { favoriteIds } = useFavoritesStore();
-    const fetcher = useFetcher<{ cars: any[] }>();
+    type GarageCar = Prisma.CarGetPayload<{ include: { spec: true } }>;
+    const fetcher = useFetcher<{ cars: GarageCar[] }>();
     const navigate = useNavigate();
     const [mounted, setMounted] = React.useState(false);
 
@@ -77,7 +80,7 @@ export default function Garagem() {
                         <Button
                             className="bg-blue-600 hover:bg-blue-700 font-bold"
                             disabled={cars.length < 2}
-                            onClick={() => navigate(`/compare?ids=${cars.map((c: any) => c.id).join(",")}`)}
+                            onClick={() => navigate(`/compare?ids=${cars.map((c) => c.id).join(",")}`)}
                         >
                             Comparar Estes {cars.length} Carros
                         </Button>
@@ -88,7 +91,7 @@ export default function Garagem() {
                         <div className="py-20 text-center text-gray-400">Carregando sua garagem...</div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {cars.map((car: any) => (
+                            {cars.map((car) => (
                                 <Card key={car.id} className="relative group overflow-hidden border-none shadow-md hover:shadow-xl transition-all">
                                     <div className="absolute top-3 right-3 z-30">
                                         <FavoriteButton carId={car.id} className="bg-white/90 shadow-sm hover:bg-white" />
@@ -116,11 +119,11 @@ export default function Garagem() {
                                         <div className="grid grid-cols-2 gap-y-2 gap-x-4">
                                             <div className="space-y-0.5">
                                                 <p className="text-[10px] text-gray-400 font-bold uppercase">Porta-malas</p>
-                                                <p className="font-bold text-gray-900">{car.spec?.trunk_liters} L</p>
+                                                <p className="font-bold text-gray-900">{formatLiters(car.spec?.trunk_liters)}</p>
                                             </div>
                                             <div className="space-y-0.5">
                                                 <p className="text-[10px] text-gray-400 font-bold uppercase">Consumo (Urb)</p>
-                                                <p className="font-bold text-gray-900">{car.spec?.fuel_consumption_city} km/L</p>
+                                                <p className="font-bold text-gray-900">{formatKmPerLiter(car.spec?.fuel_consumption_city)}</p>
                                             </div>
                                         </div>
                                     </CardContent>

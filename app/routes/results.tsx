@@ -12,6 +12,7 @@ import { Separator } from "~/components/ui/separator";
 import { Filter, SlidersHorizontal, ArrowUpDown, CheckSquare, Square, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
 import * as React from "react";
 import { calculateMatch } from "~/utils/match.server";
+import { formatCv, formatKmPerLiter, formatLiters, formatMeters, formatSeconds } from "~/utils/metrics";
 import { toPriceNumber } from "~/utils/price";
 import RadarChart, { RadarLegend } from "~/components/RadarChart";
 import { useComparisonStore } from "~/stores/comparison";
@@ -39,7 +40,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     const w_space = Number(url.searchParams.get("w_space")) || 0;
     const isMatchMode = url.searchParams.get("mode") === "match";
 
-    const filters: any = {};
+    const filters: Prisma.CarWhereInput = {};
     if (q) filters.OR = [{ model: { contains: q } }, { brand: { contains: q } }];
     if (type) filters.type = type;
     filters.spec = { trunk_liters: { gte: minTrunk }, fuel_consumption_city: { gte: minCons } };
@@ -143,7 +144,7 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {cars.map((car: any) => {
+                    {cars.map((car) => {
                         const isSelected = selectedCars.includes(car.id);
                         return (
                             <Card key={car.id} className={`relative group overflow-hidden hover:shadow-xl transition-all border-none shadow-md ring-1 ring-gray-200 ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50/30' : ''}`}>
@@ -212,19 +213,19 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                     <div className="grid grid-cols-2 gap-y-2 gap-x-4">
                                         <div className="space-y-0.5">
                                             <p className="text-[10px] text-gray-400 font-bold uppercase">Porta-malas</p>
-                                            <p className="font-bold text-gray-900">{car.spec?.trunk_liters} L</p>
+                                            <p className="font-bold text-gray-900">{formatLiters(car.spec?.trunk_liters)}</p>
                                         </div>
                                         <div className="space-y-0.5">
                                             <p className="text-[10px] text-gray-400 font-bold uppercase">Consumo (Urb)</p>
-                                            <p className="font-bold text-gray-900">{car.spec?.fuel_consumption_city} km/L</p>
+                                            <p className="font-bold text-gray-900">{formatKmPerLiter(car.spec?.fuel_consumption_city)}</p>
                                         </div>
                                         <div className="space-y-0.5">
                                             <p className="text-[10px] text-gray-400 font-bold uppercase">Desempenho</p>
-                                            <p className="font-bold text-gray-900">{car.spec?.hp} cv / {car.spec?.acceleration}s</p>
+                                            <p className="font-bold text-gray-900">{formatCv(car.spec?.hp)} / {formatSeconds(car.spec?.acceleration)}</p>
                                         </div>
                                         <div className="space-y-0.5">
                                             <p className="text-[10px] text-gray-400 font-bold uppercase">Entre-eixos</p>
-                                            <p className="font-bold text-gray-900">{car.spec?.wheelbase} m</p>
+                                            <p className="font-bold text-gray-900">{formatMeters(car.spec?.wheelbase)}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -307,7 +308,7 @@ function PriorityBadge({ label, value }: { label: string; value: number }) {
     );
 }
 
-function FeedbackControl({ carId, weights }: { carId: string; weights: any }) {
+function FeedbackControl({ carId, weights }: { carId: string; weights: Record<string, number> }) {
     const [status, setStatus] = React.useState<'idle' | 'loading' | 'success'>('idle');
 
     const handleFeedback = async (thumbs: boolean) => {
