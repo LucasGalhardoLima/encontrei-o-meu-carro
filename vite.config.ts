@@ -4,10 +4,14 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+const isVitest = process.env.VITEST === "true";
+
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  plugins: isVitest
+    ? [tsconfigPaths()]
+    : [tailwindcss(), reactRouter(), tsconfigPaths()],
   test: {
-    environment: 'node',
-    include: ['app/**/*.test.ts'],
+    environment: "node",
+    include: ["app/**/*.test.ts"],
   },
 });

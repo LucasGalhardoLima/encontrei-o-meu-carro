@@ -18,11 +18,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    command: 'npm run build && npm run start',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     env: {
       ...process.env,
+      PORT: "5173",
       ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ?? '123456',
     },
   },

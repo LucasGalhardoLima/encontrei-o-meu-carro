@@ -4,17 +4,12 @@ import { type Prisma } from "@prisma/client";
 import { Link, useSubmit, Form } from "react-router";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Slider } from "~/components/ui/slider";
 import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card";
-import { Label } from "~/components/ui/label";
-import { Separator } from "~/components/ui/separator";
-import { Filter, SlidersHorizontal, ArrowUpDown, CheckSquare, Square, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Filter, CheckSquare, Square, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
 import * as React from "react";
 import { calculateMatch } from "~/utils/match.server";
 import { formatCv, formatKmPerLiter, formatLiters, formatMeters, formatSeconds } from "~/utils/metrics";
 import { toPriceNumber } from "~/utils/price";
-import RadarChart, { RadarLegend } from "~/components/RadarChart";
 import { useComparisonStore } from "~/stores/comparison";
 import { FavoriteButton } from "~/components/FavoriteButton";
 

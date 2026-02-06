@@ -1,5 +1,5 @@
 import type { Route } from "./+types/compare";
-import { Link, useLoaderData, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { prisma } from "~/utils/db.server";
 import { Button } from "~/components/ui/button";
 import { ArrowLeft, CheckCircle, XCircle, AlertCircle } from "lucide-react";

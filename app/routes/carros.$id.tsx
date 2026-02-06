@@ -1,10 +1,9 @@
 import type { Route } from "./+types/carros.$id";
-import { Link, useLoaderData, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { prisma } from "~/utils/db.server";
 import { calculateScores } from "~/utils/score.server";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-import { Separator } from "~/components/ui/separator";
 import { Progress } from "~/components/ui/progress";
 import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info, PlusCircle, CheckCircle, ExternalLink, ShoppingCart } from "lucide-react";
 import { useComparisonStore } from "~/stores/comparison";

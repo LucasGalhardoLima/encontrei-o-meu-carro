@@ -1,5 +1,5 @@
 import type { Route } from "./+types/admin.$id";
-import { redirect, useLoaderData } from "react-router";
+import { redirect } from "react-router";
 import { prisma } from "~/utils/db.server";
 import { requireAdminAuth } from "~/utils/admin-auth.server";
 import { calculateScores } from "~/utils/score.server";
