@@ -70,6 +70,9 @@ App disponível em `http://localhost:5173`.
 - `npm run typecheck`: gera tipos de rota + TypeScript
 - `npm run test:unit`: testes unitários (Vitest)
 - `npm run test:e2e`: testes E2E (Playwright)
+- `npm run test:e2e:external`: testes E2E usando servidor já iniciado externamente
+
+Para rodar testes E2E que validam persistência em banco, use `RUN_DB_TESTS=1`.
 
 ## Rotas principais
 

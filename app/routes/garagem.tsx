@@ -1,6 +1,5 @@
 import * as React from "react";
 import type { Route } from "./+types/garagem";
-import type { Prisma } from "@prisma/client";
 import { Link, useFetcher, useNavigate } from "react-router";
 import { useFavoritesStore } from "~/stores/favorites";
 import { FavoriteButton } from "~/components/FavoriteButton";
@@ -12,6 +11,19 @@ import { ArrowLeft, CarFront, Share2 } from "lucide-react";
 import { formatKmPerLiter, formatLiters } from "~/utils/metrics";
 import { toPriceNumber } from "~/utils/price";
 
+type GarageCar = {
+    id: string;
+    brand: string;
+    model: string;
+    year: number;
+    price_avg: unknown;
+    imageUrl: string | null;
+    spec: {
+        trunk_liters: number;
+        fuel_consumption_city: number;
+    } | null;
+};
+
 export function meta({ }: Route.MetaArgs) {
     return [
         { title: "Minha Garagem - Encontre o meu carro" },
@@ -21,7 +33,6 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Garagem() {
     const { favoriteIds } = useFavoritesStore();
-    type GarageCar = Prisma.CarGetPayload<{ include: { spec: true } }>;
     const fetcher = useFetcher<{ cars: GarageCar[] }>();
     const navigate = useNavigate();
     const [mounted, setMounted] = React.useState(false);

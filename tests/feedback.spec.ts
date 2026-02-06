@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { prisma } from '~/utils/db.server';
+
+const dbTest = process.env.RUN_DB_TESTS === '1' ? test : test.skip;
 
 test.describe('Feedback API', () => {
-    test('should save user feedback via API', async ({ request }) => {
+    dbTest('should save user feedback via API', async ({ request }) => {
+        const { prisma } = await import('~/utils/db.server');
+
         // 1. Setup: Get a valid car ID
         const car = await prisma.car.findFirst();
         expect(car).not.toBeNull();

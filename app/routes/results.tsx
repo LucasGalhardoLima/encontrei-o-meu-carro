@@ -1,6 +1,5 @@
 import type { Route } from "./+types/results";
 import { prisma } from "~/utils/db.server";
-import { type Prisma } from "@prisma/client";
 import { Link, useSubmit, Form } from "react-router";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -35,7 +34,14 @@ export async function loader({ request }: Route.LoaderArgs) {
     const w_space = Number(url.searchParams.get("w_space")) || 0;
     const isMatchMode = url.searchParams.get("mode") === "match";
 
-    const filters: Prisma.CarWhereInput = {};
+    const filters: {
+        OR?: Array<{ model: { contains: string } } | { brand: { contains: string } }>;
+        type?: string;
+        spec?: {
+            trunk_liters: { gte: number };
+            fuel_consumption_city: { gte: number };
+        };
+    } = {};
     if (q) filters.OR = [{ model: { contains: q } }, { brand: { contains: q } }];
     if (type) filters.type = type;
     filters.spec = { trunk_liters: { gte: minTrunk }, fuel_consumption_city: { gte: minCons } };
@@ -44,7 +50,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
     if (rawCars.length === 0) return { cars: [], params: { q, type, minTrunk, minCons, order, weights: null } };
 
-    type CarWithSpec = Prisma.CarGetPayload<{ include: { spec: true } }>;
+    type CarWithSpec = (typeof rawCars)[number];
 
     const scoredCars = rawCars.map((car: CarWithSpec) => {
         const weights = { comfort: w_comfort, economy: w_economy, performance: w_performance, space: w_space };
