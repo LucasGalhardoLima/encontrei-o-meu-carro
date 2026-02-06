@@ -12,6 +12,7 @@ import { Separator } from "~/components/ui/separator";
 import { Filter, SlidersHorizontal, ArrowUpDown, CheckSquare, Square, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
 import * as React from "react";
 import { calculateMatch } from "~/utils/match.server";
+import { toPriceNumber } from "~/utils/price";
 import RadarChart, { RadarLegend } from "~/components/RadarChart";
 import { useComparisonStore } from "~/stores/comparison";
 import { FavoriteButton } from "~/components/FavoriteButton";
@@ -55,7 +56,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
         // Custom Custo-benefício (legacy logic but using scores now?) 
         // Let's keep a simple calculation for legacy sort if needed, or ignore.
-        const legacyScore = car.price_avg;
+        const legacyScore = toPriceNumber(car.price_avg);
 
         return {
             ...car,
@@ -68,8 +69,8 @@ export async function loader({ request }: Route.LoaderArgs) {
     scoredCars.sort((a, b) => {
         if (isMatchMode) return b.matchScore - a.matchScore;
         if (order === 'cost_benefit') return b.matchScore - a.matchScore; // Fallback to match for now
-        if (order === 'price_asc') return a.price_avg - b.price_avg;
-        if (order === 'price_desc') return b.price_avg - a.price_avg;
+        if (order === 'price_asc') return toPriceNumber(a.price_avg) - toPriceNumber(b.price_avg);
+        if (order === 'price_desc') return toPriceNumber(b.price_avg) - toPriceNumber(a.price_avg);
         if (order === 'year_desc') return b.year - a.year;
         return 0;
     });
@@ -197,7 +198,6 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                             ))}
                                         </div>
                                     </div>
-// ... (rest of card)
                                     <CardHeader className="pb-2">
                                         <div className="flex justify-between items-start">
                                             <div>
@@ -232,7 +232,7 @@ export default function Results({ loaderData }: Route.ComponentProps) {
                                     <div className="w-full flex justify-between items-center">
                                         <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Preço Médio</span>
                                         <span className="text-xl font-black text-blue-600">
-                                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(car.price_avg)}
+                                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(toPriceNumber(car.price_avg))}
                                         </span>
                                     </div>
                                 </CardFooter>

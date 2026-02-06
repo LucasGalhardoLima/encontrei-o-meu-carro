@@ -7,6 +7,7 @@ import { Badge } from "~/components/ui/badge";
 import { useComparisonStore } from "~/stores/comparison";
 import { useEffect } from "react";
 import { getWebmotorsUrl, getOlxUrl } from "~/utils/deep-links";
+import { toPriceNumber } from "~/utils/price";
 
 export async function loader({ request }: Route.LoaderArgs) {
     const url = new URL(request.url);
@@ -113,7 +114,7 @@ export default function Compare({ loaderData }: Route.ComponentProps) {
                             <div className="mt-2 flex items-center gap-2">
                                 <Badge variant="outline" className="border-gray-300">{car.year}</Badge>
                                 <span className="text-lg font-bold text-blue-600">
-                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(car.price_avg)}
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(toPriceNumber(car.price_avg))}
                                 </span>
                             </div>
 
@@ -204,7 +205,7 @@ export default function Compare({ loaderData }: Route.ComponentProps) {
                                 label="Vão Livre do Solo"
                                 val1={cars[0].spec?.ground_clearance ?? 0}
                                 val2={cars[1].spec?.ground_clearance ?? 0}
-                                unit="cm"
+                                unit="mm"
                                 winnerIdx={getWinner(cars[0].spec?.ground_clearance ?? 0, cars[1].spec?.ground_clearance ?? 0)}
                             />
                         </ComparisonSection>

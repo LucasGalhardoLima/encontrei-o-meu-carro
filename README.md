@@ -45,6 +45,7 @@ cp .env.example .env
 - `DATABASE_URL` (obrigatória)
 - `ADMIN_USER` (padrão: `admin`)
 - `ADMIN_PASSWORD` (obrigatória para rotas `/admin`)
+- `VITE_SITE_URL` (opcional, usada para URLs absolutas de SEO/OG)
 
 4. Rode migrações e seed:
 

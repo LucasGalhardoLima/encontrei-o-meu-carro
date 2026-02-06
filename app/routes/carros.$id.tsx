@@ -9,6 +9,7 @@ import { Progress } from "~/components/ui/progress";
 import { ArrowLeft, Gauge, Fuel, Snowflake, Box, Timer, Activity, Info, PlusCircle, CheckCircle, ExternalLink, ShoppingCart } from "lucide-react";
 import { useComparisonStore } from "~/stores/comparison";
 import { getWebmotorsUrl, getOlxUrl, getMercadoLivreUrl } from "~/utils/deep-links";
+import { toPriceNumber } from "~/utils/price";
 import * as React from "react";
 import { FavoriteButton } from "~/components/FavoriteButton";
 
@@ -49,7 +50,7 @@ export function meta({ data }: Route.MetaArgs) {
     }
 
     const { car } = data;
-    const siteUrl = "https://encontreomeucarro.com.br"; // Replace with actual domain env var if available
+    const siteUrl = (import.meta.env.VITE_SITE_URL || "https://encontreomeucarro.com.br").replace(/\/$/, "");
 
     // Construct dynamic OG image URL
     // /resource/og?brand=Fiat&model=Pulse&year=2024&price=120000&badge=Porta-malas
@@ -57,7 +58,7 @@ export function meta({ data }: Route.MetaArgs) {
     ogUrl.searchParams.set("brand", car.brand);
     ogUrl.searchParams.set("model", car.model);
     ogUrl.searchParams.set("year", String(car.year));
-    ogUrl.searchParams.set("price", String(car.price_avg));
+    ogUrl.searchParams.set("price", String(toPriceNumber(car.price_avg)));
 
     // Find a highlight/badge for the OG image
     let badge = "";
@@ -68,7 +69,7 @@ export function meta({ data }: Route.MetaArgs) {
     }
     if (badge) ogUrl.searchParams.set("badge", badge);
 
-    const description = `Confira os detalhes do ${car.brand} ${car.model} ${car.year}. Preço médio: R$ ${car.price_avg.toLocaleString('pt-BR')}.`;
+    const description = `Confira os detalhes do ${car.brand} ${car.model} ${car.year}. Preço médio: R$ ${toPriceNumber(car.price_avg).toLocaleString('pt-BR')}.`;
 
     return [
         { title: `${car.brand} ${car.model} ${car.year} - Detalhes e Ficha Técnica` },
@@ -159,8 +160,8 @@ export default function CarDetail({ loaderData }: Route.ComponentProps) {
 
                         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                             <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Preço Médio (FIPE)</p>
-                            <p className="text-4xl font-bold text-gray-900">
-                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(car.price_avg)}
+                                <p className="text-4xl font-bold text-gray-900">
+                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(toPriceNumber(car.price_avg))}
                             </p>
                         </div>
 

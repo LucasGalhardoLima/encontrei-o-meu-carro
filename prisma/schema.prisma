@@ -12,7 +12,7 @@ model Car {
   brand     String
   model     String
   year      Int
-  price_avg Float
+  price_avg Decimal  @db.Decimal(12, 2)
   type      String   // SUV, Sedan, Hatchback, etc.
   imageUrl  String?
 

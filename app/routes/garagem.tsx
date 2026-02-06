@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card"
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { ArrowLeft, CarFront, Share2 } from "lucide-react";
+import { toPriceNumber } from "~/utils/price";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -127,7 +128,7 @@ export default function Garagem() {
                                         <div className="w-full flex justify-between items-center">
                                             <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Preço Médio</span>
                                             <span className="text-xl font-black text-blue-600">
-                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(car.price_avg)}
+                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(toPriceNumber(car.price_avg))}
                                             </span>
                                         </div>
                                     </CardFooter>

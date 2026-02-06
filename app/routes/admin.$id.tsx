@@ -3,6 +3,7 @@ import { redirect, useLoaderData } from "react-router";
 import { prisma } from "~/utils/db.server";
 import { requireAdminAuth } from "~/utils/admin-auth.server";
 import { calculateScores } from "~/utils/score.server";
+import { toPriceNumber } from "~/utils/price";
 import { CarForm } from "~/components/CarForm";
 import { CarFormSchema } from "~/schemas/car";
 import { ArrowLeft, Trash2 } from "lucide-react";
@@ -106,7 +107,7 @@ export default function EditCar({ loaderData }: Route.ComponentProps) {
         brand: car.brand,
         model: car.model,
         year: car.year,
-        price_avg: car.price_avg,
+        price_avg: toPriceNumber(car.price_avg),
         type: car.type,
         imageUrl: car.imageUrl || "",
         trunk_liters: car.spec?.trunk_liters || 0,
