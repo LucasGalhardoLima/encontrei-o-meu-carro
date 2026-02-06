@@ -1,8 +1,6 @@
 import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
-import { pipeline } from 'stream/promises';
-import { Readable } from 'stream';
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -30,12 +28,9 @@ async function downloadImage(url: string, filename: string): Promise<boolean> {
     
     if (!response.ok) return false;
     
-    if (response.body) {
-      // @ts-ignore
-      await pipeline(Readable.fromWeb(response.body), fs.createWriteStream(filepath));
-      return true;
-    }
-    return false;
+    const imageBuffer = Buffer.from(await response.arrayBuffer());
+    await fs.promises.writeFile(filepath, imageBuffer);
+    return true;
   } catch {
     return false;
   }
