@@ -1,6 +1,7 @@
 import type { Route } from "./+types/admin.$id";
 import { redirect, useLoaderData } from "react-router";
 import { prisma } from "~/utils/db.server";
+import { requireAdminAuth } from "~/utils/admin-auth.server";
 import { calculateScores } from "~/utils/score.server";
 import { CarForm } from "~/components/CarForm";
 import { CarFormSchema } from "~/schemas/car";
@@ -8,7 +9,9 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Link, Form } from "react-router";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ request, params }: Route.LoaderArgs) {
+    requireAdminAuth(request);
+
     const { id } = params;
     const car = await prisma.car.findUnique({
         where: { id },
@@ -21,6 +24,8 @@ export async function loader({ params }: Route.LoaderArgs) {
 }
 
 export async function action({ request, params }: Route.ActionArgs) {
+    requireAdminAuth(request);
+
     const { id } = params;
     if (!id) return redirect("/admin");
 

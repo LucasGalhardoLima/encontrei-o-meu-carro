@@ -1,14 +1,10 @@
 import type { Route } from "./+types/admin";
-import { Link, useSubmit, useNavigation } from "react-router";
+import { Link } from "react-router";
 import { prisma } from "~/utils/db.server";
+import { requireAdminAuth } from "~/utils/admin-auth.server";
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { PlusCircle, Edit2, Archive, Search } from "lucide-react";
+import { PlusCircle, Edit2, Search } from "lucide-react";
 import { Input } from "~/components/ui/input";
-
-// Basic Auth Logic
-const ADMIN_USER = "admin";
-const ADMIN_PASS = process.env.ADMIN_PASSWORD || "123456";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -18,30 +14,7 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-    const authHeader = request.headers.get("Authorization");
-
-    // Simple Basic Auth Check
-    if (!authHeader) {
-        return new Response("Unauthorized", {
-            status: 401,
-            headers: { "WWW-Authenticate": 'Basic realm="Admin Area"' },
-        });
-    }
-
-    const [scheme, encoded] = authHeader.split(" ");
-    if (!encoded || scheme !== "Basic") {
-        return new Response("Unauthorized", {
-            status: 401,
-            headers: { "WWW-Authenticate": 'Basic realm="Admin Area"' },
-        });
-    }
-
-    const buffer = Buffer.from(encoded, "base64");
-    const [user, pass] = buffer.toString("utf-8").split(":");
-
-    if (user !== ADMIN_USER || pass !== ADMIN_PASS) {
-        return new Response("Forbidden", { status: 403 });
-    }
+    requireAdminAuth(request);
 
     const url = new URL(request.url);
     const search = url.searchParams.get("q");

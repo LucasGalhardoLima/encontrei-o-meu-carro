@@ -1,6 +1,7 @@
 import type { Route } from "./+types/admin.new";
 import { redirect } from "react-router";
 import { prisma } from "~/utils/db.server";
+import { requireAdminAuth } from "~/utils/admin-auth.server";
 import { calculateScores } from "~/utils/score.server";
 import { CarForm } from "~/components/CarForm";
 import { CarFormSchema } from "~/schemas/car";
@@ -13,7 +14,14 @@ export function meta({ }: Route.MetaArgs) {
     return [{ title: "Novo Carro - Admin" }];
 }
 
+export async function loader({ request }: Route.LoaderArgs) {
+    requireAdminAuth(request);
+    return null;
+}
+
 export async function action({ request }: Route.ActionArgs) {
+    requireAdminAuth(request);
+
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
 
