@@ -31,6 +31,6 @@ test.describe('Feedback API', () => {
         });
         expect(feedback).not.toBeNull();
         expect(feedback?.thumbs).toBe(true);
-        expect(JSON.parse(feedback?.weights || '{}')).toEqual(payload.weights);
+        expect(feedback?.weights).toEqual(payload.weights);
     });
 });

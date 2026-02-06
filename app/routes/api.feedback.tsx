@@ -18,7 +18,7 @@ export async function action({ request }: Route.ActionArgs) {
             data: {
                 carId,
                 thumbs: !!thumbs,
-                weights: JSON.stringify(weights || {}),
+                weights: weights || {},
             }
         });
 

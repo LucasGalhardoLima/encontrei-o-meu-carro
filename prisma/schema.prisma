@@ -62,7 +62,7 @@ model Feedback {
   car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
   
   thumbs    Boolean  // true = like/sense, false = dislike/nonsense
-  weights   String   // JSON string of user weights { comfort: 10, ... }
+  weights   Json     // user weights { comfort: 10, ... }
   
   createdAt DateTime @default(now())
 
