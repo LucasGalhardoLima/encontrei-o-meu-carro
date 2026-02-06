@@ -16,7 +16,21 @@ export type MatchResult = {
   badges: string[];
 };
 
-export function calculateMatch(car: any, weights: Weights): MatchResult {
+type MatchSpec = {
+  trunk_score?: number | null;
+  wheelbase_score?: number | null;
+  ground_clearance_score?: number | null;
+  consumption_score?: number | null;
+  hp_score?: number | null;
+  acceleration_score?: number | null;
+};
+
+type MatchCarInput = {
+  id?: string;
+  spec?: MatchSpec | null;
+};
+
+export function calculateMatch(car: MatchCarInput, weights: Weights): MatchResult {
   if (!car.spec) {
     return {
       percentage: 0,
@@ -57,10 +71,10 @@ export function calculateMatch(car: any, weights: Weights): MatchResult {
   
   // Logic: Badge if Attribute Score is High (>8) AND User cares about it (>25% relative weight or high absolute value?)
   // Let's use simple logic: If score >= 8
-  if (s.trunk_score >= 9) badges.push("Porta-malas Gigante");
-  if (s.consumption_score >= 8) badges.push("Econômico");
-  if (s.hp_score >= 8) badges.push("Potente");
-  if (s.wheelbase_score >= 8) badges.push("Espaçoso");
+  if ((s.trunk_score ?? 0) >= 9) badges.push("Porta-malas Gigante");
+  if ((s.consumption_score ?? 0) >= 8) badges.push("Econômico");
+  if ((s.hp_score ?? 0) >= 8) badges.push("Potente");
+  if ((s.wheelbase_score ?? 0) >= 8) badges.push("Espaçoso");
   if (score_comfort >= 8) badges.push("Selo Conforto");
 
   // Dynamic Badges based on User Match (only if user actually asked for it)

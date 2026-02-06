@@ -6,6 +6,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { Form, useNavigation } from "react-router";
+import type { Resolver } from "react-hook-form";
 
 interface CarFormProps {
     defaultValues?: Partial<CarFormValues>;
@@ -17,7 +18,7 @@ export function CarForm({ defaultValues, intent }: CarFormProps) {
     const isSubmitting = navigation.state === "submitting";
 
     const form = useForm<CarFormValues>({
-        resolver: zodResolver(CarFormSchema) as any,
+        resolver: zodResolver(CarFormSchema) as Resolver<CarFormValues>,
         defaultValues: defaultValues || {
             brand: "",
             model: "",
@@ -31,6 +32,8 @@ export function CarForm({ defaultValues, intent }: CarFormProps) {
             fuel_consumption_city: 0,
             hp: 0,
             acceleration: 0,
+            transmission: "Automático",
+            fuel_type: "Flex",
         },
     });
 

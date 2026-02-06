@@ -32,7 +32,7 @@ export async function action({ request }: Route.ActionArgs) {
         // Return errors to field ? In remix traditional logic we return json.
         // But here we are using client side validation mostly. 
         // For safety, let's just log and throw for this MVP or return error.
-        return { error: "Dados inválidos: " + result.error.issues.map((e: any) => e.message).join(", ") };
+        return { error: "Dados inválidos: " + result.error.issues.map((issue) => issue.message).join(", ") };
     }
 
     const validData = result.data;

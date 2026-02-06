@@ -1,11 +1,14 @@
-export default function RadarChart({ userWeights, carScores }: { userWeights: any; carScores: any }) {
+type RadarKey = "space" | "performance" | "economy" | "comfort";
+type RadarValues = Partial<Record<RadarKey, number>>;
+
+export default function RadarChart({ userWeights, carScores }: { userWeights: RadarValues; carScores: RadarValues }) {
     const size = 100;
     const center = size / 2;
     const radius = 40;
 
     // Categories in order: Space (Top), Performance (Right), Economy (Bottom), Comfort (Left)
     // Angles: -90 (Top), 0 (Right), 90 (Bottom), 180 (Left)
-    const categories = [
+    const categories: { key: RadarKey; angle: number; label: string }[] = [
         { key: "space", angle: -90, label: "Espaço" },
         { key: "performance", angle: 0, label: "Performance" },
         { key: "economy", angle: 90, label: "Economia" },
