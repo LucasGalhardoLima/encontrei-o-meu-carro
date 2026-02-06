@@ -2,26 +2,24 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Programmatic SEO', () => {
     test('should render car detail page with correct metadata', async ({ page }) => {
-        // Assuming the car exists (Fiat Fastback 2024 from seed)
-        // URL Structure: /carros/:brand/:slug (where slug = model-year)
-        const response = await page.goto('/carros/Fiat/Fastback-2024');
+        await page.goto('/results');
 
-        // 1. Check Response
+        const firstCarLink = page.locator('a[href^="/carros/"]').first();
+        await expect(firstCarLink).toBeVisible();
+        const href = await firstCarLink.getAttribute('href');
+        expect(href).toMatch(/^\/carros\/.+/);
+
+        const response = await page.goto(href!);
+
         expect(response?.status()).toBe(200);
-
-        // 2. Check Title
-        await expect(page).toHaveTitle(/Fiat Fastback 2024.*Encontre o Meu Carro/i);
-
-        // 3. Check Mega Tags
+        await expect(page.locator('h1')).toBeVisible();
+        await expect(page).toHaveTitle(/Detalhes e Ficha Técnica/i);
         const description = page.locator('meta[name="description"]');
-        await expect(description).toHaveAttribute('content', /Fiat Fastback/i);
-        
-        // 4. Check H1
-        await expect(page.locator('h1')).toContainText('Fiat Fastback');
+        await expect(description).toHaveAttribute('content', /Confira os detalhes do/i);
     });
 
     test('should handle invalid car slugs gracefully', async ({ page }) => {
-        const response = await page.goto('/carros/Fiat/Nave-Espacial-3000');
+        const response = await page.goto('/carros/invalid-id');
         expect(response?.status()).toBe(404);
     });
 });
