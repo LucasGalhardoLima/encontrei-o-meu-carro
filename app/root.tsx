@@ -8,6 +8,9 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { Header } from "~/components/layout/Header";
+import { Footer } from "~/components/layout/Footer";
+import { SkipLink } from "~/components/layout/SkipLink";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -25,7 +28,7 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,31 +44,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-import { Header } from "./components/header";
-import { Footer } from "./components/footer";
-
 export default function App() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
+      <SkipLink />
       <Header />
-      <main className="flex-1">
+      <main id="main-content" className="min-h-[calc(100vh-8rem)]">
         <Outlet />
       </main>
       <Footer />
-    </div>
+    </>
   );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
-  let details = "An unexpected error occurred.";
+  let details = "Ocorreu um erro inesperado.";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? "404" : "Erro";
     details =
       error.status === 404
-        ? "The requested page could not be found."
+        ? "A página que você procura não foi encontrada."
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
@@ -73,14 +74,16 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
+    <main className="flex min-h-screen items-center justify-center p-4">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold">{message}</h1>
+        <p className="mt-2 text-muted-foreground">{details}</p>
+        {stack && (
+          <pre className="mt-4 max-w-2xl overflow-x-auto rounded-md bg-muted p-4 text-left text-sm">
+            <code>{stack}</code>
+          </pre>
+        )}
+      </div>
     </main>
   );
 }

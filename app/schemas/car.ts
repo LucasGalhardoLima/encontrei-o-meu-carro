@@ -7,12 +7,19 @@ export const CarFormSchema = z.object({
   price_avg: z.coerce.number().min(0, "Preço deve ser positivo"),
   type: z.string().min(1, "Categoria é obrigatória"),
   imageUrl: z.string().url("URL inválida").optional().or(z.literal("")),
-  
+  fipe_code: z.string().optional(),
+  moderation_status: z
+    .enum(["pending", "approved", "rejected"])
+    .optional()
+    .default("pending"),
+
   // Specs
   trunk_liters: z.coerce.number().min(0).default(0),
+  tank_capacity: z.coerce.number().min(0).default(0),
   wheelbase: z.coerce.number().min(0).default(0),
   ground_clearance: z.coerce.number().min(0).default(0),
   fuel_consumption_city: z.coerce.number().min(0).default(0),
+  fuel_consumption_highway: z.coerce.number().min(0).optional(),
   hp: z.coerce.number().min(0).optional().default(0),
   acceleration: z.coerce.number().min(0).optional().default(0),
   transmission: z.string().default("Automático"),

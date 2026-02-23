@@ -1,114 +1,170 @@
+import { useLoaderData } from "react-router";
 import type { Route } from "./+types/admin";
-import { Link } from "react-router";
 import { prisma } from "~/utils/db.server";
 import { requireAdminAuth } from "~/utils/admin-auth.server";
+import { calculateScores } from "~/utils/score.server";
+import { ModerationQueue } from "~/components/admin/ModerationQueue";
+import { IngestionStatus } from "~/components/admin/IngestionStatus";
 import { Button } from "~/components/ui/button";
-import { PlusCircle, Edit2, Search } from "lucide-react";
-import { Input } from "~/components/ui/input";
-
-export function meta({ }: Route.MetaArgs) {
-    return [
-        { title: "Admin - Backoffice" },
-        { name: "description", content: "Gestão de Carros" },
-    ];
-}
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Link } from "react-router";
+import { Plus } from "lucide-react";
 
 export async function loader({ request }: Route.LoaderArgs) {
-    requireAdminAuth(request);
+  requireAdminAuth(request);
 
-    const url = new URL(request.url);
-    const search = url.searchParams.get("q");
+  const [pendingCars, approvedCount, pendingCount, recentJobs] =
+    await Promise.all([
+      prisma.car.findMany({
+        where: { moderation_status: "pending" },
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      }),
+      prisma.car.count({ where: { moderation_status: "approved" } }),
+      prisma.car.count({ where: { moderation_status: "pending" } }),
+      prisma.ingestionJob.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+    ]);
 
-    const cars = await prisma.car.findMany({
-        where: search ? {
-            OR: [
-                { brand: { contains: search, mode: 'insensitive' } },
-                { model: { contains: search, mode: 'insensitive' } },
-            ]
-        } : undefined,
-        orderBy: { brand: 'asc' },
-        include: { spec: true }
-    });
-
-    return { cars, search };
+  return {
+    pendingCars: pendingCars.map((c) => ({
+      id: c.id,
+      brand: c.brand,
+      model: c.model,
+      year: c.year,
+      price_avg: c.price_avg.toString(),
+      type: c.type,
+      source: c.source,
+      moderation_status: c.moderation_status,
+    })),
+    approvedCount,
+    pendingCount,
+    recentJobs: recentJobs.map((j) => ({
+      id: j.id,
+      status: j.status,
+      startedAt: j.startedAt?.toISOString() ?? null,
+      completedAt: j.completedAt?.toISOString() ?? null,
+      carsAdded: j.carsAdded,
+      carsUpdated: j.carsUpdated,
+      carsSkipped: j.carsSkipped,
+    })),
+  };
 }
 
-export default function Admin({ loaderData }: Route.ComponentProps) {
-    const { cars, search } = loaderData;
+export async function action({ request }: Route.ActionArgs) {
+  requireAdminAuth(request);
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+  const carId = formData.get("carId") as string;
 
-    return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            {/* Header */}
-            <div className="bg-white border-b sticky top-0 z-10">
-                <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-xl font-bold">Admin Panel</h1>
-                    <div className="flex gap-2">
-                        <Button asChild size="sm">
-                            <Link to="/admin/new">
-                                <PlusCircle className="mr-2 h-4 w-4" /> Novo Carro
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
-            </div>
+  if (intent === "approve" && carId) {
+    const car = await prisma.car.findUnique({
+      where: { id: carId },
+      include: { spec: true },
+    });
+    if (car) {
+      // Recalculate scores on approve
+      if (car.spec) {
+        const scores = calculateScores({
+          trunk_liters: car.spec.trunk_liters,
+          wheelbase: car.spec.wheelbase,
+          ground_clearance: car.spec.ground_clearance,
+          fuel_consumption_city: car.spec.fuel_consumption_city,
+          hp: car.spec.hp ?? undefined,
+          acceleration: car.spec.acceleration ?? undefined,
+        });
+        await prisma.spec.update({
+          where: { id: car.spec.id },
+          data: scores,
+        });
+      }
+      await prisma.car.update({
+        where: { id: carId },
+        data: { moderation_status: "approved" },
+      });
+    }
+  }
 
-            <div className="container mx-auto px-4 py-8">
-                {/* Search */}
-                <div className="mb-6 relative max-w-md">
-                    <form method="get">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                            name="q"
-                            className="pl-10 bg-white"
-                            placeholder="Buscar por marca ou modelo..."
-                            defaultValue={search || ""}
-                        />
-                    </form>
-                </div>
+  if (intent === "reject" && carId) {
+    const car = await prisma.car.findUnique({ where: { id: carId } });
+    if (car) {
+      await prisma.car.update({
+        where: { id: carId },
+        data: { moderation_status: "rejected" },
+      });
+      if (car.fipe_code) {
+        await prisma.rejectedCar.upsert({
+          where: { fipe_code: car.fipe_code },
+          create: {
+            fipe_code: car.fipe_code,
+            brand: car.brand,
+            model: car.model,
+            year: car.year,
+            reason: "Rejected by admin",
+          },
+          update: { reason: "Rejected by admin" },
+        });
+      }
+    }
+  }
 
-                {/* List */}
-                <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
-                    <div className="grid grid-cols-[auto_1fr_auto] gap-4 p-4 border-b bg-gray-50 font-medium text-sm text-gray-500">
-                        <div>Status</div>
-                        <div>Carro</div>
-                        <div className="text-right">Ações</div>
-                    </div>
-                    {cars.length === 0 && (
-                        <div className="p-12 text-center text-gray-500">
-                            Nenhum carro encontrado.
-                        </div>
-                    )}
-                    {cars.map((car) => (
-                        <div key={car.id} className="grid grid-cols-[auto_1fr_auto] gap-4 p-4 border-b last:border-0 items-center hover:bg-gray-50/50 transition-colors">
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: car.spec ? '#22c55e' : '#f59e0b' }} title={car.spec ? "Publicado" : "Rascunho"}></div>
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded bg-gray-100 flex-shrink-0 overflow-hidden border">
-                                    {car.imageUrl ? (
-                                        <img src={car.imageUrl} alt={car.model} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">IMG</div>
-                                    )}
-                                </div>
-                                <div>
-                                    <div className="font-bold text-gray-900">{car.brand} {car.model}</div>
-                                    <div className="text-xs text-gray-500 flex gap-2">
-                                        <span>{car.year}</span>
-                                        <span>•</span>
-                                        <span>{car.type}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <Button size="sm" variant="outline" asChild>
-                                    <Link to={`/admin/${car.id}`}>
-                                        <Edit2 className="h-4 w-4 text-gray-500" />
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
+  if (intent === "trigger-ingestion") {
+    // Start ingestion in background (non-blocking)
+    import("~/services/ingestion/runner.server").then(({ runIngestionJob }) =>
+      runIngestionJob().catch(console.error)
     );
+  }
+
+  return { ok: true };
+}
+
+export const meta = () => [{ title: "Admin — Encontre o Meu Carro" }];
+
+export default function AdminPage() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div className="container mx-auto space-y-8 px-4 py-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Painel Admin</h1>
+        <Button asChild className="min-h-[44px] gap-2">
+          <Link to="/admin/cars/new">
+            <Plus className="size-4" />
+            Novo carro
+          </Link>
+        </Button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Aprovados</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{data.approvedCount}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Pendentes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-yellow-500">
+              {data.pendingCount}
+            </p>
+          </CardContent>
+        </Card>
+        <IngestionStatus jobs={data.recentJobs} />
+      </div>
+
+      {/* Moderation Queue */}
+      <div>
+        <h2 className="mb-4 text-lg font-semibold">Fila de Moderação</h2>
+        <ModerationQueue cars={data.pendingCars} />
+      </div>
+    </div>
+  );
 }

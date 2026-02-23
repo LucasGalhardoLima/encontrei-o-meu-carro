@@ -13,6 +13,7 @@ const initialCars = [
     imageUrl: "https://static.kbb.com.br/pkw/t/fiat/fastback/2023/5od.jpg", // KBB ✅
     spec: {
       trunk_liters: 600,
+      tank_capacity: 48,
       wheelbase: 2.53,
       ground_clearance: 192,
       fuel_consumption_city: 11.3,
@@ -28,9 +29,10 @@ const initialCars = [
     year: 2024,
     price_avg: 145990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/volkswagen/t-cross/2023/5od.jpg", // KBB ✅
+    imageUrl: "https://static.kbb.com.br/pkw/t/volkswagen/t-cross/2023/5od.jpg",
     spec: {
       trunk_liters: 373,
+      tank_capacity: 50,
       wheelbase: 2.65,
       ground_clearance: 190,
       fuel_consumption_city: 11.0,
@@ -46,9 +48,10 @@ const initialCars = [
     year: 2024,
     price_avg: 89990,
     type: "Hatch",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/2021_Volkswagen_Polo_Life.jpg/800px-2021_Volkswagen_Polo_Life.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/2021_Volkswagen_Polo_Life.jpg/800px-2021_Volkswagen_Polo_Life.jpg",
     spec: {
       trunk_liters: 300,
+      tank_capacity: 52,
       wheelbase: 2.56,
       ground_clearance: 149,
       fuel_consumption_city: 13.5,
@@ -64,9 +67,10 @@ const initialCars = [
     year: 2024,
     price_avg: 110990,
     type: "Picape",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Fiat_Strada_Volcano_1.3_2021_front_view.jpg/800px-Fiat_Strada_Volcano_1.3_2021_front_view.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Fiat_Strada_Volcano_1.3_2021_front_view.jpg/800px-Fiat_Strada_Volcano_1.3_2021_front_view.jpg",
     spec: {
       trunk_liters: 844,
+      tank_capacity: 48,
       wheelbase: 2.73,
       ground_clearance: 208,
       fuel_consumption_city: 11.7,
@@ -82,9 +86,10 @@ const initialCars = [
     year: 2024,
     price_avg: 82990,
     type: "Hatch",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Hyundai_HB20_facelift_in_Montevideo_%28cropped%29.jpg/800px-Hyundai_HB20_facelift_in_Montevideo_%28cropped%29.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Hyundai_HB20_facelift_in_Montevideo_%28cropped%29.jpg/800px-Hyundai_HB20_facelift_in_Montevideo_%28cropped%29.jpg",
     spec: {
       trunk_liters: 300,
+      tank_capacity: 50,
       wheelbase: 2.53,
       ground_clearance: 160,
       fuel_consumption_city: 13.3,
@@ -100,9 +105,10 @@ const initialCars = [
     year: 2024,
     price_avg: 85990,
     type: "Hatch",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Chevrolet_Onix_Premier_2020.jpg/800px-Chevrolet_Onix_Premier_2020.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Chevrolet_Onix_Premier_2020.jpg/800px-Chevrolet_Onix_Premier_2020.jpg",
     spec: {
       trunk_liters: 275,
+      tank_capacity: 44,
       wheelbase: 2.55,
       ground_clearance: 128,
       fuel_consumption_city: 13.9,
@@ -118,9 +124,10 @@ const initialCars = [
     year: 2024,
     price_avg: 184990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/jeep/compass/2023/5od.jpg", // KBB ✅
+    imageUrl: "https://static.kbb.com.br/pkw/t/jeep/compass/2023/5od.jpg",
     spec: {
       trunk_liters: 476,
+      tank_capacity: 60,
       wheelbase: 2.63,
       ground_clearance: 205,
       fuel_consumption_city: 10.5,
@@ -136,9 +143,10 @@ const initialCars = [
     year: 2024,
     price_avg: 148990,
     type: "Sedan",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/2020_Toyota_Corolla_Altis_1.8_G_ZRE211R_%2820200228%29.jpg/800px-2020_Toyota_Corolla_Altis_1.8_G_ZRE211R_%2820200228%29.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/2020_Toyota_Corolla_Altis_1.8_G_ZRE211R_%2820200228%29.jpg/800px-2020_Toyota_Corolla_Altis_1.8_G_ZRE211R_%2820200228%29.jpg",
     spec: {
       trunk_liters: 470,
+      tank_capacity: 50,
       wheelbase: 2.70,
       ground_clearance: 148,
       fuel_consumption_city: 11.6,
@@ -154,9 +162,10 @@ const initialCars = [
     year: 2024,
     price_avg: 135990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/hyundai/creta/2024/5od.jpg", // KBB ✅
+    imageUrl: "https://static.kbb.com.br/pkw/t/hyundai/creta/2024/5od.jpg",
     spec: {
       trunk_liters: 422,
+      tank_capacity: 50,
       wheelbase: 2.61,
       ground_clearance: 190,
       fuel_consumption_city: 11.6,
@@ -172,9 +181,10 @@ const initialCars = [
     year: 2024,
     price_avg: 125990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/nissan/kicks/2023/5od.jpg", // KBB ✅
+    imageUrl: "https://static.kbb.com.br/pkw/t/nissan/kicks/2023/5od.jpg",
     spec: {
       trunk_liters: 432,
+      tank_capacity: 41,
       wheelbase: 2.62,
       ground_clearance: 200,
       fuel_consumption_city: 11.4,
@@ -190,9 +200,10 @@ const initialCars = [
     year: 2024,
     price_avg: 129990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/jeep/renegade/2023/5od.jpg", // KBB ✅
+    imageUrl: "https://static.kbb.com.br/pkw/t/jeep/renegade/2023/5od.jpg",
     spec: {
       trunk_liters: 320,
+      tank_capacity: 48,
       wheelbase: 2.57,
       ground_clearance: 185,
       fuel_consumption_city: 9.5,
@@ -208,9 +219,10 @@ const initialCars = [
     year: 2024,
     price_avg: 151990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/honda/hr-v/2023/5od.jpg", // KBB ✅
+    imageUrl: "https://static.kbb.com.br/pkw/t/honda/hr-v/2023/5od.jpg",
     spec: {
       trunk_liters: 354,
+      tank_capacity: 40,
       wheelbase: 2.61,
       ground_clearance: 188,
       fuel_consumption_city: 12.7,
@@ -226,9 +238,10 @@ const initialCars = [
     year: 2024,
     price_avg: 164990,
     type: "SUV",
-    imageUrl: "/images/placeholder.png", // Placeholder (KBB forbidden)
+    imageUrl: "/images/placeholder.png",
     spec: {
       trunk_liters: 440,
+      tank_capacity: 47,
       wheelbase: 2.64,
       ground_clearance: 161,
       fuel_consumption_city: 11.7,
@@ -244,9 +257,10 @@ const initialCars = [
     year: 2024,
     price_avg: 130990,
     type: "SUV",
-    imageUrl: "https://static.kbb.com.br/pkw/t/chevrolet/tracker/2023/5od.jpg", // KBB ✅
+    imageUrl: "https://static.kbb.com.br/pkw/t/chevrolet/tracker/2023/5od.jpg",
     spec: {
       trunk_liters: 393,
+      tank_capacity: 44,
       wheelbase: 2.57,
       ground_clearance: 157,
       fuel_consumption_city: 11.2,
@@ -262,9 +276,10 @@ const initialCars = [
     year: 2024,
     price_avg: 71990,
     type: "Hatch",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Fiat_Mobi_Like_2021.jpg/800px-Fiat_Mobi_Like_2021.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Fiat_Mobi_Like_2021.jpg/800px-Fiat_Mobi_Like_2021.jpg",
     spec: {
       trunk_liters: 215,
+      tank_capacity: 45,
       wheelbase: 2.30,
       ground_clearance: 190,
       fuel_consumption_city: 13.5,
@@ -280,9 +295,10 @@ const initialCars = [
     year: 2024,
     price_avg: 72990,
     type: "Hatch",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Renault_Kwid_Intense_2022_front.jpg/800px-Renault_Kwid_Intense_2022_front.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Renault_Kwid_Intense_2022_front.jpg/800px-Renault_Kwid_Intense_2022_front.jpg",
     spec: {
       trunk_liters: 290,
+      tank_capacity: 38,
       wheelbase: 2.42,
       ground_clearance: 185,
       fuel_consumption_city: 15.3,
@@ -298,12 +314,13 @@ const initialCars = [
     year: 2024,
     price_avg: 149800,
     type: "Hatch",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/BYD_Dolphin_IAA_2023_1X7A0063.jpg/800px-BYD_Dolphin_IAA_2023_1X7A0063.jpg", // Wikimedia fallback
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/BYD_Dolphin_IAA_2023_1X7A0063.jpg/800px-BYD_Dolphin_IAA_2023_1X7A0063.jpg",
     spec: {
       trunk_liters: 345,
+      tank_capacity: 0,
       wheelbase: 2.70,
       ground_clearance: 120,
-      fuel_consumption_city: 20.0, // Electric equivalent
+      fuel_consumption_city: 20.0,
       fuel_type: "Elétrico",
       transmission: "Automático",
       hp: 95,
@@ -328,8 +345,11 @@ function generateSpec(type: string, price: number) {
   // Random variations (+- 10%)
   const vary = (val: number) => val * (0.9 + Math.random() * 0.2);
   
+  const tank = isSUV ? 55 : (isSedan ? 50 : 45);
+
   return {
     trunk_liters: Math.floor(vary(trunk)),
+    tank_capacity: Math.floor(vary(tank)),
     wheelbase: isSUV ? 2.62 : (isSedan ? 2.65 : 2.55),
     ground_clearance: isSUV ? 190 : 150,
     fuel_consumption_city: parseFloat(vary(consumption).toFixed(1)),
@@ -350,12 +370,13 @@ async function main() {
     
     await prisma.car.create({
       data: {
-        brand: car.brand, 
-        model: car.model, 
-        year: car.year, 
-        price_avg: car.price_avg, 
-        type: car.type, 
-        imageUrl: realImageUrl, // Using real KBB image
+        brand: car.brand,
+        model: car.model,
+        year: car.year,
+        price_avg: car.price_avg,
+        type: car.type,
+        imageUrl: realImageUrl,
+        moderation_status: "approved",
         spec: { create: { ...car.spec, ...calculateScores(car.spec) } },
       },
     });
@@ -389,7 +410,8 @@ async function main() {
         year: kbb.year,
         price_avg: kbb.price_avg,
         type: type,
-        imageUrl: realImageUrl, // Correctly mapped real photo
+        imageUrl: realImageUrl,
+        moderation_status: "approved",
         spec: {
             create: {
                 ...generatedSpec,

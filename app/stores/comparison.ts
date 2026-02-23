@@ -15,11 +15,7 @@ export const useComparisonStore = create<ComparisonState>()(
             selectedCarIds: [],
             addCar: (id) => set((state) => {
                 if (state.selectedCarIds.includes(id)) return state;
-                if (state.selectedCarIds.length >= 2) {
-                    // Start replacing the first one? Or just prevent? 
-                    // Let's prevent for now or maybe Shift. 
-                    // User requirement says "up to 2". 
-                    // Let's do FIFO (First In First Out) if > 2, so user can keep clicking.
+                if (state.selectedCarIds.length >= 4) {
                     const newIds = [...state.selectedCarIds.slice(1), id];
                     return { selectedCarIds: newIds };
                 }
@@ -32,7 +28,7 @@ export const useComparisonStore = create<ComparisonState>()(
                 if (state.selectedCarIds.includes(id)) {
                     return { selectedCarIds: state.selectedCarIds.filter((carId) => carId !== id) };
                 } else {
-                    if (state.selectedCarIds.length >= 2) {
+                    if (state.selectedCarIds.length >= 4) {
                         return { selectedCarIds: [...state.selectedCarIds.slice(1), id] };
                     }
                     return { selectedCarIds: [...state.selectedCarIds, id] };
