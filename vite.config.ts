@@ -13,6 +13,7 @@ export default defineConfig({
     : [tailwindcss(), reactRouter(), tsconfigPaths()],
   build: {
     rollupOptions: {
+      external: ["pdf-parse"],
       onwarn(warning, warn) {
         if (
           warning.code === "EMPTY_BUNDLE" &&
