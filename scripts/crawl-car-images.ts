@@ -1,8 +1,10 @@
 import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
-import { pipeline } from 'stream/promises';
-import { Readable } from 'stream';
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
 
 const carsToFind = [
   { brand: "volkswagen", model: "polo", displayName: "Volkswagen Polo", year: 2024, filename: "polo.jpg" },
@@ -26,12 +28,9 @@ async function downloadImage(url: string, filename: string): Promise<boolean> {
     
     if (!response.ok) return false;
     
-    if (response.body) {
-      // @ts-ignore
-      await pipeline(Readable.fromWeb(response.body), fs.createWriteStream(filepath));
-      return true;
-    }
-    return false;
+    const imageBuffer = Buffer.from(await response.arrayBuffer());
+    await fs.promises.writeFile(filepath, imageBuffer);
+    return true;
   } catch {
     return false;
   }
@@ -129,17 +128,17 @@ async function tryKBB(brand: string, model: string, year: number, filename: stri
         }
       }
       
-    } catch (navError: any) {
-      console.log(`  ⚠️  KBB: Navigation failed - ${navError.message}`);
+    } catch (navError: unknown) {
+      console.log(`  ⚠️  KBB: Navigation failed - ${getErrorMessage(navError)}`);
     }
     
     await browser.close();
     console.log(`  ⚠️  KBB: No image found, trying fallback...`);
     return { success: false };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     await browser.close();
-    console.log(`  ⚠️  KBB: Error - ${error.message}, trying fallback...`);
+    console.log(`  ⚠️  KBB: Error - ${getErrorMessage(error)}, trying fallback...`);
     return { success: false };
   }
 }
@@ -184,9 +183,9 @@ async function tryGoogleImages(displayName: string, year: number, filename: stri
     console.log(`  ❌ Google: No valid image found`);
     return { success: false };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     await browser.close();
-    console.log(`  ❌ Google: Error - ${error.message}`);
+    console.log(`  ❌ Google: Error - ${getErrorMessage(error)}`);
     return { success: false };
   }
 }

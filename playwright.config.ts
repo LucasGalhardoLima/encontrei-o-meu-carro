@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const useExternalServer = process.env.PLAYWRIGHT_EXTERNAL_SERVER === '1';
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -17,13 +19,18 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    env: {
-      ...process.env,
-      ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ?? '123456',
-    },
-  },
+  ...(useExternalServer
+    ? {}
+    : {
+        webServer: {
+          command: 'npm run build && npm run start',
+          url: 'http://localhost:5173',
+          reuseExistingServer: !process.env.CI,
+          env: {
+            ...process.env,
+            PORT: '5173',
+            ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ?? '123456',
+          },
+        },
+      }),
 });

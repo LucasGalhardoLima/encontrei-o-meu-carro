@@ -1,112 +1,105 @@
-# Welcome to React Router!
+# Encontre o Meu Carro
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Aplicação full-stack para descoberta e comparação de carros com base em dados técnicos e preferências do usuário.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## O que a aplicação faz
 
-## Features
+- Busca e filtros por carros.
+- Quiz de prioridades (conforto, economia, performance e espaço).
+- Ranking por match.
+- Comparação lado a lado.
+- Página de detalhe com metadados dinâmicos e imagem OG.
+- Favoritos locais ("Minha Garagem").
+- Backoffice admin para gestão de carros.
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Stack
 
-## Getting Started
+- React Router 7 (SSR)
+- React 19 + TypeScript
+- Tailwind CSS 4
+- Prisma + PostgreSQL (Neon)
+- Zustand (estado client-side)
+- Vitest + Playwright (testes)
 
-### Installation
+## Requisitos
 
-Install the dependencies:
+- Node 20+
+- PostgreSQL (ou Neon)
+
+## Configuração local
+
+1. Instale dependências:
 
 ```bash
 npm install
 ```
 
-### Database Setup
-
-This project uses [Neon DB](https://neon.tech) (PostgreSQL) as the database.
-
-1. Create a `.env` file in the root directory:
+2. Copie o arquivo de ambiente:
 
 ```bash
 cp .env.example .env
 ```
 
-2. Update the `DATABASE_URL` in `.env` with your Neon DB connection string.
+3. Configure variáveis no `.env`:
 
-3. Run the database migrations:
+- `DATABASE_URL` (obrigatória)
+- `ADMIN_USER` (padrão: `admin`)
+- `ADMIN_PASSWORD` (obrigatória para rotas `/admin`)
+- `VITE_SITE_URL` (opcional, usada para URLs absolutas de SEO/OG)
+
+4. Rode migrações e seed:
 
 ```bash
 npx prisma migrate dev
-```
-
-4. Seed the database with initial data:
-
-```bash
 npx prisma db seed
 ```
 
-
-### Development
-
-Start the development server with HMR:
+5. Inicie em desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+App disponível em `http://localhost:5173`.
 
-## Building for Production
+## Scripts úteis
 
-Create a production build:
+- `npm run dev`: ambiente local
+- `npm run build`: build de produção
+- `npm run start`: sobe build de produção
+- `npm run typecheck`: gera tipos de rota + TypeScript
+- `npm run test:unit`: testes unitários (Vitest)
+- `npm run test:e2e`: testes E2E (Playwright)
+- `npm run test:e2e:external`: testes E2E usando servidor já iniciado externamente
+
+Para rodar testes E2E que validam persistência em banco, use `RUN_DB_TESTS=1`.
+
+## Rotas principais
+
+- `/`: home/busca
+- `/results`: listagem e ranking
+- `/quiz`: quiz de prioridades
+- `/compare`: comparação
+- `/carros/:id`: detalhe do carro
+- `/garagem`: favoritos
+- `/admin`: listagem admin
+- `/admin/new`: criação admin
+- `/admin/:id`: edição admin
+- `/api/cars`: API de carros por ids
+- `/api/feedback`: API de feedback do ranking
+
+## Deploy
+
+### Docker
+
+```bash
+docker build -t encontre-o-meu-carro .
+docker run -p 3000:3000 encontre-o-meu-carro
+```
+
+### Node
 
 ```bash
 npm run build
+npm run start
 ```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
